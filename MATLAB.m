@@ -93,5 +93,33 @@ vers_N=N/norm(N); %versore di N
 d_n=D*vers_N'; %la distanza lungo N è prod scalare fra D e vers_N
 
 
+%%
 
+%Ex7
 
+clc
+clear all
+%vettore1 e 2
+x1=-3:0.2:1;
+x2=-2:0.4:4;
+
+%funzioni date
+y1=x1.^2+2;
+y2=-x2.^2-3;
+
+Q1=[x1',y1']; %matrice Q1 con coordinate (x1, y1)
+Q2=[x2',y2']; %matrice Q2 con coordinate (x2, y2)
+
+%visualizzo Q1 e Q2:
+disp('Matrice Q1:');
+disp(Q1);
+disp('Matrice Q2:');
+disp(Q2);
+
+%traslo Q1 di -2 lungo x e -2 lungo y
+Q1_traslata = Q1 - [2, 2];
+
+%devo rappresentare le curve nella stessa area grafica
+%blu per Q1 e rosso per Q2
+figure; 
+title("RAPPRESENTAZIONE CURVE");
