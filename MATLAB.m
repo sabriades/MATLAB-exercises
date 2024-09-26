@@ -68,14 +68,29 @@ D(:,4)=[] %elimino la 4a colonna
 plot3(D(:,1), D(:,2), D(:,3), 'r-', 'LineWidth', 2, 'Marker', 'o', 'MarkerFaceColor', 'r', 'MarkerSize', 8)
 
 %%
+
 %Ex5 - dati due punti, calcola la distanza tra essi
 clc
 clear all 
 
 P1=[1,2,1];
 P2=[5,3,3];
+D=P2-P1; %distanza tra i due punti
+d=norm(D) %la distanza è la norma del vettore D
+
+%%
+
+%Ex6 - per i due P assegnati nell'ex5, calcola la 
+%distanza lungo la direzione definita da N
+
+clc
+clear all 
+P1=[1,2,1];
+P2=[5,3,3];
 D=P2-P1;
-d=norm(D)
+N=[1,2,2];
+vers_N=N/norm(N); %versore di N
+d_n=D*vers_N'; %la distanza lungo N è prod scalare fra D e vers_N
 
 
 
