@@ -120,6 +120,64 @@ disp(Q2);
 Q1_traslata = Q1 - [2, 2];
 
 %devo rappresentare le curve nella stessa area grafica
-%blu per Q1 e rosso per Q2
+%blu per Q1 e rosso per Q2. figure:si imposta il riquadro
 figure; 
-title("RAPPRESENTAZIONE CURVE");
+%plotto tutte le righe della 1a colonna della Q1_traslata
+%plotto tutte le righe della 2a colonna della Q2_traslata
+%b:curva di colore blu 
+%specifichiamo lo spessore della linea, con valore 2
+plot(Q1_traslata(:,1),Q1_traslata(:,2),'b','LineWidth',2);
+hold on; %i grafici dopo questo comando non sostituiranno,
+%ma potranno coesistere coi precedenti
+plot(Q2(:,1),Q2(:,2),'r','LineWidth',2);
+hold off; %ripristina il comportamento precedente(cioè grafici che si sovrappongono)
+%ETICHETTE:
+xlabel('asse x');
+ylabel('asse y');
+title('RAPPRESENTAZIONE DELLE CURVE');
+legend('Q1_traslata','Q2');
+%grid on:aggiunge una griglia orizzontale e verticale al grafico
+grid on; 
+
+%%
+
+%Ex8 
+clc 
+clear all
+
+%vettore x1 e x2
+x1=-3:0.2:1;
+x2=-2:0.4:4;
+
+%funzioni date
+y1=x1.^2+2;
+y2=-x2.^2-3;
+
+%NOTA:. l'apice alle coordinate si usa per trasformare un vettore riga in
+%un vettore colonna in questo caso
+
+%MATRICI:
+Q1=[x1',y1']; 
+Q2=[x2',y2'];
+%distanza minima:
+min_dist=inf; %settiamo la distanza minima a infinito
+puntomin_Q1=[0,0]; 
+puntomin_Q2=[0,0];
+%andiamo a confrontare ogni coppia di punti delle curve, per vedere quali
+%danno la minima distanza 
+
+%ciclo per trovare la distanza minima tra i punti di Q1 e Q2
+
+for i=1:size(Q1,1) %size(Q1,1) mi dà il numero di righe della matrice
+    for j=1:size(Q2,1) %size(Q2,1) numero di righe della matrice (per ottenere le colonne dovevo mettere size(Q2,2))
+        %calcolo la distanza tra i punti
+        dist=norm(Q1(i,:)-Q2(j,:)); %si considerano tutte le righe e tutte le colonne delle matrici
+        %calcolo distanza tramite norma euclidea
+        if dist<min_dist %dist dev'essere minore. l'altro è infinito
+            puntomin_Q1=Q1(i,:); %si riaggiornano i valori dei punti definiti prima
+            puntomin_Q2=Q2(j,:);
+        end
+    end
+end
+
+
