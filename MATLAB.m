@@ -174,10 +174,51 @@ for i=1:size(Q1,1) %size(Q1,1) mi dà il numero di righe della matrice
         dist=norm(Q1(i,:)-Q2(j,:)); %si considerano tutte le righe e tutte le colonne delle matrici
         %calcolo distanza tramite norma euclidea
         if dist<min_dist %dist dev'essere minore. l'altro è infinito
+            min_dist=dist; %aggiorno la distanza minima con quella trovata
             puntomin_Q1=Q1(i,:); %si riaggiornano i valori dei punti definiti prima
             puntomin_Q2=Q2(j,:);
         end
     end
 end
 
+%rappresentazione grafica delle curve
+figure; %creo il riquadro
+hold on; 
+plot(Q1(:,1),Q1(:,2),'b','LineWidth',2); %plotto Q1
+plot(Q2(:,1),Q2(:,2),'r','LineWidth',2); %plottoQ2
+%congiungente (in verde) dei punti con distanza minima:
+plot([puntomin_Q1(1),puntomin_Q2(1)],[puntomin_Q1(2),puntomin_Q2(2)],'g','LineWidth',2);
+%puntomin_Q1(1) coordinata x del punto Q1
+%puntomin_Q1(2) coordinate y del punto Q1
+%ETICHETTE:
+xlabel('asse x');
+ylabel('asse y');
+title('DISTANZA MINIMA TRA LE CURVE');
+legend('CURVA Q1','CURVA Q2','CONGIUNGENTE');
+grid on; %aggiunge la griglia
+hold off;
 
+%
+
+%Ex9 - calcolare il versore della congiungente dei due punti puntomin_Q1 e
+%puntomin_Q2
+
+%vettore congiungente
+vetC=puntomin_Q1-puntomin_Q2;
+%calcolo della norma del vettore:lunghezza del vettore
+norm_vetC=norm(vetC);
+%calcolo versore congiungente
+verC=vetC/norm_vetC;
+
+%stampa versore congiungente
+disp('Versore congiungente:');
+disp(verC);
+
+%%
+
+%Ex10 -
+
+N1=[1,1,0];
+N2=[0,1,0];
+norm_N1=norm(N1);
+norm_N2=norm(N2);
