@@ -218,7 +218,95 @@ disp(verC);
 
 %Ex10 -
 
+clc %pulisce la command window
+clear all %cancella le variabili memorizzate
+
+%vettore x1 e x2
+x1=-3:0.2:1;
+x2=-2:0.4:4;
+
+%funzioni date
+y1=x1.^2+2;
+y2=-x2.^2-3;
+
+%MATRICI:
+Q1=[x1',y1']; 
+Q2=[x2',y2'];
+
+%vettori dati:
 N1=[1,1,0];
 N2=[0,1,0];
+%devo proiettare la distanza tra i punti delle curve Q1 e Q2 lungo i vettori N1 e N2 
+
+%norma:
 norm_N1=norm(N1);
 norm_N2=norm(N2);
+
+%calcolo dei rispettivi versori: 
+vers_N1=N1/norm_N1;
+vers_N2=N2/norm_N2;
+
+%adatto le matrici Q1 e Q2 (in dimensione) ai vettori N1 e N2
+Q1(:,3)=0; %si aggiunge la colonna di z=0
+Q2(:,3)=0;
+
+%NOTA:. i vettori N1 e N2 hanno 3 colonne e una riga
+%CALCOLO DISTANZE MINIME di Q1 e Q2 lungo N1 e N2
+distmin_N1=inf;
+distmin_N2=inf;
+
+%inizializzo i punti della Q1 e Q2 (lungo N1 e N2) con distanza min 
+puntoQ1_minN1=[];
+puntoQ1_minN2=[];
+puntoQ2_minN1=[];
+puntoQ2_minN2=[];
+
+%loop per calcolare la distanza tra ogni punto di Q1 e Q2
+for i=1:size(Q1,1) %loop per ogni punto di Q1
+    for j=1:size(Q2,1) %loop per ogni punto di Q2
+        %vettore differenza tra Q2 e Q1
+        vett_diff=Q2(j,:)-Q1(i,:);
+        %proietto il vettore differenza lungo le direzioni N1 e N2
+        proj_N1=abs(dot(vett_diff,vers_N1));
+        proj_N2=abs(dot(vett_diff,vers_N2));
+%dot:calcola il prodotto scalare tra due vettori, quindi sto moltiplicando
+%scalarmente il vettore differenza per il versore N1 e N2
+%abs:valore assoluto (del risultato). cioè si fa il valore assoluto del
+%risultato del prodotto scalare
+
+%aggiorno la distanza minima lungo N1
+if proj_N1<distmin_N1 
+    distmin_N1=proj_N1;
+    %puntoQ_minN è un valore che si riaggiorna ogni volta, finché non
+    %troviamo il punto che dà la distanza minima (proiettata lungo le direzioni N) e allora
+    %quella resterà come ultimo valore
+    puntoQ1_minN1=Q1(i,:);
+    puntoQ2_minN1=Q2(j,:);
+end
+%aggiorno la distanza minima lungo N2
+if proj_N2<distmin_N2
+    distmin_N2=proj_N2;
+    puntoQ1_minN2=Q1(i,:);
+    puntoQ2_minN2=Q2(j,:);
+end
+end
+end
+
+%confronta le distanze minime tra N1 e N2
+if distmin_N1<distmin_N2
+    distmin=distmin_N1;
+    dir_min='N1';
+    puntomin_Q1=puntoQ1_minN1;
+    puntomin_Q2=puntoQ2_minN1;
+else 
+    distmin=distmin_N2;
+    dir_min='N2';
+    puntomin_Q1=puntoQ1_minN2;
+    puntomin_Q2=puntoQ2_minN2;
+end
+
+%Stampa i risultati
+disp(['La distanza minima tra le curve è: ', num2str(distmin)]);
+disp(['Si ottiene lungo la direzione: ', dir_min]);
+disp(['Il punto su Q1 corrispondente è: (', num2str(puntomin_Q1), ')']);
+disp(['Il punto su Q2 corrispondente è: (', num2str(puntomin_Q2), ')']);
