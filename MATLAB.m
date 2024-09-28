@@ -318,3 +318,79 @@ disp(['La distanza minima tra le curve è: ', num2str(distmin)]);
 disp(['Si ottiene lungo la direzione: ', dir_min]);
 disp(['Il punto su Q1 corrispondente è: (', num2str(puntomin_Q1), ')']);
 disp(['Il punto su Q2 corrispondente è: (', num2str(puntomin_Q2), ')']);
+
+%%
+
+%Ex11 
+
+clc
+clear all
+
+%punto e vettore dato
+P1 = [2, 2, 1];
+N = [1, 1, 2];
+
+%calcolo versN
+versN=N/norm(N);
+
+%calcolo z: z dev'essere orientato lungo la direzione N, quindi lungo il
+
+%versore di N versN
+z=versN;
+
+%x e y, secondo la traccia, devono essere individuati dalla normale N.
+%significa che x e y sono ortogonali a z (perché z è nella direzione di N)
+%ricordiamo che per assicurarci che x (o y) e z siano ortogonali tra loro,
+%devo fare il prodotto scalare ed esso deve risultare nullo
+
+%prendo un vettore x arbitrario
+x_temp=[1,0,0];
+%calcolando il prodotto vettoriale tra x_temp e z, trovo un
+%vettore ortogonale a z e x_temp
+
+%prodotto vettoriale tra x_temp e z:
+x=cross(x_temp,z);
+
+%normalizzo x quindi lo rendo vettore unitario
+x=x/norm(x);
+
+%verifico che il prodotto scalare tra x e z sia nullo (ciò significa che x è ortogonale a z)
+prod_scal=dot(x,z);
+if prod_scal==0
+    disp('x e z sono ortogonali')
+end
+
+%y deve essere ortogonale a x e z
+y=cross(z,x); %prodotto vettoriale
+disp('y e z ortogonali');
+
+%verifica che x e y siano ortogonali a N (e quindi abbiano normale N)
+verifica_x=dot(x,N); %se tali prodotti scalari sono nulli, allora x e y sono ortogonali a N
+verifica_y=dot(y,N);
+if verifica_x==0 && verifica_y==0
+disp('x e y hanno normale N')
+else
+    error('x e y non hanno normale N')
+end
+
+%verifico che la terna sia levogira
+v=cross(x,y);
+
+%prodotto scalare che deve uscire >0 se la terna è levogira
+%se prodotto scalare<0 allora la terna e destrogira
+verifica_lev=dot(v,z);
+if verifica_lev>0
+    disp('la terna (x,y,z) è levogira')
+else 
+    error('la terna (x,y,z) non è levogira')
+end 
+
+%il piano che passa per il punto P1 ha normale N. possiamo considerare 
+% tale piano come infinito e che perciò comprende P1 e tutti i punti che si ottengono come
+% combinazioni lineari dei vettori x e y.  avendo x e y normale N, come verificato, 
+% significa che già passano per il piano P1, quindi non c'è bisogno di
+% verificare esplicitamente che passino per P1
+
+
+
+
