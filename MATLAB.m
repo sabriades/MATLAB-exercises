@@ -391,6 +391,62 @@ end
 % significa che già passano per il piano P1, quindi non c'è bisogno di
 % verificare esplicitamente che passino per P1
 
+%%
+
+%Ex12
+
+clc
+clear all
+
+P1=[0,1,0];
+N=[2,2,0];
+
+%determinare una terna levogira con asse y orientato lungo N
+versN=N/norm(N);
+y=versN; %y lungo N
+
+%vettore x temporaneo
+x_temp=[1,0,0];
+%ci serve per fare il prodotto vettoriale
+x=cross(x_temp,y);
+
+%normalizzo x: lo rendo vettore unitario (versore)
+x=x/norm(x);
+
+%verifico che x sia ortogonale a y
+%se x ortogonale a y, allora il prodotto scalare tra loro dev'essere nullo
+%prodotto scalare:
+prod_scalxy=dot(x,y);
+if prod_scalxy==0
+    disp('x e y sono ortogonali tra loro')
+end
+
+%calcolo z tramite il prodotto vettoriale
+z=cross(y,x);
+%allora z è ortogonale sia a x che y
+
+%normalizzo z: lo rendo versore
+z=z/norm(z);
+
+%verifico che z sia ortogonale a x e y
+prod_scalzx=dot(z,x);
+prod_scalyz=dot(y,z);
+if prod_scalyz==0 && prod_scalzx==0
+    disp('z è ortogonale a x e y')
+end
+
+%verifico che la terna (x,y,z) sia levogira
+v=cross(x,z); %vettore v ottenuto tramite prodotto vettoriale
+%faccio il prodotto scalare di v con y
+ver_lev=dot(v,y);
+if ver_lev>0
+    disp('la terna (x,y,z) è levogira')
+end
+
+
+
+
+
 
 
 
