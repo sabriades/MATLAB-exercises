@@ -526,3 +526,22 @@ h32=quiver3(origin12(1),origin12(2),origin12(3),z12(1),z12(2),z12(3),1,'b','Line
 view(3);
 axis equal; 
 legend([h12,h22,h32],{'asse x','asse y','asse z'},'Location','best');
+
+%
+
+%Ex14 - determina la matrice di trasformazione tale da portare la terna
+%definita nell'ex11 a sovrapporsi sulla terna dell'ex12
+
+%definisco le 2 terne:
+%NOTA:.ho trasposto il vettore riga per farlo diventare colonna e poter
+%costruire la matrice di trasformazione
+Terna11=[x11',y11',z11']; %terna di partenza (da invertire)
+Terna12=[x12',y12',z12']; %terna di destinazione: quella a cui sovrappongo terna11
+R=Terna12*Terna11'; %matrice dei coseni direttori della terna11 rispetto alla terna12
+t=origin12-origin11; %vettore di traslazione: sposta l'origine da quella della terna11 alla 12
+%matrice di trasformazione
+MatriceT=[R,t';0,0,0,1];
+disp('matrice di trasformazione MatriceT:');
+disp(MatriceT);
+
+
