@@ -443,10 +443,48 @@ if ver_lev>0
     disp('la terna (x,y,z) è levogira')
 end
 
+%%
 
+%Ex13 - rappresentazione grafica delle terne degli ex11-12
+clc
+clear all
+%vettori dell'ex11-12
+N11=[1,1,2];
+N12=[2,2,0];
 
+%versoni N11 e N12
+vers_N11=N11/norm(N11);
+vers_N12=N12/norm(N12);
 
+%CALCOLO DELLA TERNA PER EX11
 
+%calcolo z11 lungo N11
+z11=vers_N11;
 
+%normalizzo z
+z11=z11/norm(z11);
 
+%riprendo il procedimento di ex11, senza verifiche
+x11_temp=[1,0,0];
+x11=cross(x11_temp,z11); %prodotto vettoriale
 
+%normalizzo x
+x11=x11/norm(x11);
+
+%calcolo y
+y11=cross(z11,x11); %prodotto vettoriale
+y11=y11/norm(y11); %normalizzo y
+
+%CALCOLO TERNA EX12
+y12=vers_N12;
+y12=y12/norm(y12);
+x12_temp=[1,0,0];
+x12=cross(x12_temp,y12);
+x12=x12/norm(x12);
+z12=cross(y12,x12);
+z12=z12/norm(z12);
+
+%RAPPRESENTAZIONE GRAFICA DELLE TERNE
+figure;
+hold on; 
+%WIP
