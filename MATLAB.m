@@ -544,4 +544,39 @@ MatriceT=[R,t';0,0,0,1];
 disp('matrice di trasformazione MatriceT:');
 disp(MatriceT);
 
+%
 
+%Ex15 - determina le matrici di trasformazione tali da portare le terne
+%definite nell'ex11-12 a sovrapporsi con la terna di riferimento globale
+
+%terna di riferimento globale
+terna_g=eye(3);
+
+%matrice dei coseni direttori della terna11 rispetto alla terna globale
+MCD11=terna_g*Terna11';
+
+%matrice dei coseni direttori della terna12 rispetto alla terna globale
+MCD12=terna_g*Terna12';
+
+%assegno l'origine della terna globale
+origin_g=[0,0,0];
+
+%vettore di traslazione: sposta l'origine da quella della terna11 alla
+%terna globale
+t11=origin_g-origin11; %origine di destinazione - d'inizio
+
+%vettore di traslazione: sposta l'origine da quella della terna12 alla
+%terna globale
+t12=origin_g-origin12; %origine di destinazione - d'inizio
+
+%costruisco la matrice di trasformazione per la terna11
+MAT11=[MCD11,t11';0,0,0,1];
+disp('matrice di trasformazione MAT11:');
+disp(MAT11);
+
+%costruisco la matrice di trasformazione per la terna12
+MAT12=[MCD12,t12';0,0,0,1];
+disp('matrice di trasformazione MAT12:');
+disp(MAT12);
+
+%END
