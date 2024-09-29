@@ -446,6 +446,7 @@ end
 %%
 
 %Ex13 - rappresentazione grafica delle terne degli ex11-12
+
 clc
 clear all
 %vettori dell'ex11-12
@@ -486,5 +487,42 @@ z12=z12/norm(z12);
 
 %RAPPRESENTAZIONE GRAFICA DELLE TERNE
 figure;
+
+%prima finestra per la terna dell'ex11
+subplot(1,2,1);
 hold on; 
-%WIP
+grid on; 
+xlabel('asse x');
+ylabel('asse y');
+zlabel('asse z');
+title('terna ex11');
+
+%separo le origini per chiarezza della rappresentazione, altrimenti avrei
+%le terne sovrapposte
+origin11=[2,2,1]; %P11:origine terna dell'ex11
+origin12=[0,1,0]; %P12:traslo l'origine della terna dell'ex12
+
+%TERNA EX11: rappresentazione terna ex11
+h11=quiver3(origin11(1),origin11(2),origin11(3),x11(1),x11(2),x11(3),1,'r','LineWidth',2); %asse x rosso
+h21=quiver3(origin11(1),origin11(2),origin11(3),y11(1),y11(2),y11(3),1,'g','LineWidth',2); %asse y verde
+h31=quiver3(origin11(1),origin11(2),origin11(3),z11(1),z11(2),z11(3),1,'b','LineWidth',2); %asse z blu
+view(3); %imposto la vista 3d
+axis equal; %mantiene le proporzioni uguali
+legend([h11, h21, h31],{'asse x','asse y','asse z'},'Location','best');
+
+%seconda finestra per la terna dell'ex12
+subplot(1,2,2);
+hold on; 
+grid on; 
+xlabel('asse x');
+ylabel('asse y');
+zlabel('asse z');
+title('terna ex12');
+
+%TERNA EX12: rappresentazione terna ex12
+h12=quiver3(origin12(1),origin12(2),origin12(3),x12(1),x12(2),x12(3),1,'r','LineWidth',2); %asse x rosso
+h22=quiver3(origin12(1),origin12(2),origin12(3),y12(1),y12(2),y12(3),1,'g','LineWidth',2); %asse y verde
+h32=quiver3(origin12(1),origin12(2),origin12(3),z12(1),z12(2),z12(3),1,'b','LineWidth',2); %asse z blu
+view(3);
+axis equal; 
+legend([h12,h22,h32],{'asse x','asse y','asse z'},'Location','best');
