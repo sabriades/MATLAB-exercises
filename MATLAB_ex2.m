@@ -70,9 +70,10 @@ T2=[x,y,z',P0';0,0,0,1];
 
 %il sistema di riferimento locale è definito da 
 %P0:origine del cono. x,y,z:versori. z è trasposta. 
-%ogni punto di controllo della CURVA 2 (ora in coordinate cartesiane 3d) 
-%lo devo trasformare in coordinate omogenee, aggiungendo una quarta colonna
-%di valore 1. lo devo fare perché la matrice di trasformazione T è 4x4,
+%ogni punto di controllo della CURVA 2 (attualmente in coordinate cartesiane 3D)
+%viene trasformato in coordinate omogenee aggiungendo una quarta colonna con il valore 1.
+%questo è necessario perché la matrice di trasformazione T ha dimensione 4x4
+%e richiede che anche i punti siano in coordinate omogenee per poter applicare la trasformazione
 Pc2o=Pc2;
 Pc2o(:,4)=1; %trasformo la matrice dei punti di controllo in coordinate omogenee
 
@@ -97,3 +98,23 @@ Pbs2=bsl.getBsplinePoint(Pc2l,p,U2,0,1,res);
 bsl.writePointonFile("Gamma2.txt",Pbs2);  
 
 %%CURVA GAMMA1
+
+t=linspace(0,2*pi-a_rad);
+xGamma1=R1*cos(t);
+yGamma1=R1*sin(t);
+zGamma1=0*t;
+%vettore dei punti da interpolare:
+Q1=[xGamma1',yGamma1',zGamma1'];
+p=2; %grado della curva
+[Pc1,U1]=bsl.globalCurveInterp(Q1,p);
+res=100;
+bsl.createCurve(Pc1,p,U1,res);
+P1=L*z;     %la posizione del centro di Gamma1 rispetto P0 si trova moltiplicando il versore z locale per L
+Rt1=[x,y,z']; %Matrice di rotazione
+Pc1r=Rt1*Pc1';  %Ruoto i punti di controllo nel sistema globale per allinearli all'orientamento del cono
+Pc1r=Pc1r';
+Pc1tr=Pc1r+P1;  %Traslo i punti di controllo trovati nel globale
+bsl.createCurve(Pc1tr,p,U1,res);
+Pbs1=bsl.getBsplinePoint(Pc1tr,p,U1,0,1,100);
+bsl.writePointonFile("Gamma1.txt",Pbs1);
+
