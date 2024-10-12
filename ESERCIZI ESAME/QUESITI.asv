@@ -1,11 +1,11 @@
 
-%%QUESITI
+%% QUESITI
 
 clc
 clear 
 close all
 
-%esercitazione 1:
+%% QUESITO1:
 %data la funzione polinomiale con la sua equazione, eseguine il
 %campionamento nell'intervallo [-1,1] con passo 0.3. Q è la matrice
 %dei punti campionati
@@ -28,12 +28,38 @@ res=100; %risoluzione della curva
 subplot(2,2,1); %primo riquadro con la sua grandezza
 bsl.createCurve(Pc,p,U,res); %plotta la curva b-spline
 title("curva interpolante");
+
 subplot(2,2,2);
-bsl.getBsplinePoint;
 msize=6;
+bsl.plotCloudPoint(Q,msize); %plotto i punti Q
 title("punti Q");
+
 subplot(2,2,3);
 plot(x,y);
-title("funzione");
+title("funzione f(x)");
+
+%% QUESITO2
+
+%campiona l'arco di circonferenza con R=1 e centro [0,0] nell'intervallo
+%angolare [30,300]°. usa passo angolare di 20°. i punti campionati sono Q
+theta=30*pi/180:20*pi/180:300*pi/180;
+%valori in gradi convertiti in rad
+R=1 %raggio unitario
+x=R*cos(theta);
+y=R*sin(theta);
+Q=[x;y]'; %matrice dei punti campionati Q
+p=2;
+[Pc,U]=bsl.globalCurveInterp(Q,p); %interpolo dei punti Q
+res=100; %risoluzione della curva
+%plottaggio: della curva b-spline interpolante; dei punti campionati Q
+subplot(3,3,1);
+bsl.createCurve(Pc,p,U,res);
+title("curva inter");
+
+
+
+
+
+
 
 
