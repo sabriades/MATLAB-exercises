@@ -100,14 +100,31 @@ tup=1;
 Pbs=bsl.getBsplinePoint(Pc,p,U,tlow,tup,res); %calcola i punti della B-spline
 bsl.writePointonFile("Punti_quesito3",Pbs); %scrive i punti in un file txt
 
+%% QUESITO4
 
+clc
+clear all
 
+%calcola la b-spline di grado p=4 assegnati i punti di passaggio Q0,1,2,3,4
+Q=[0 0 0 %inserisco i punti di passaggio Q dati in una matrice
+-32 34 0
+0.6 80 16
+-65 89 31
+127 108 2];
+p=4;
 
+[Pc,U]=bsl.globalCurveInterp(Q,p); %interpolo i punti con la b-spline 
+%la b-spline passerà quindi per questi punti
+res=100;
+bsl.createCurve(Pc,p,U,res);
+title("b-spline");
 
+%test plottaggio della nuvola di punti
+msize=6; % msize - dimensione grafica del punto
+bsl.plotCloudPoint(Q,msize); %plotta la nuvola di punti
 
-
-
-
-
-
-
+%esportare la curva in SolidWorks
+tlow=0;
+tup=1;
+Pbs=bsl.getBsplinePoint(Pc,p,U,tlow,tup,res); %calcola i res punti della b-spline
+bsl.writePointonFile("punti_quesito4",Pbs); %esporta i punti della curva
