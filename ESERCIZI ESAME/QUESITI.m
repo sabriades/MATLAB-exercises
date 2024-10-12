@@ -63,6 +63,46 @@ msize=4;
 bsl.plotCloudPoint(Q,msize);
 %title("punti campionati Q");
 
+%% QUESITO3
+
+clc
+clear all
+
+%calcola la b-spline di grado p=3, dati i punti di controllo Pc0=[0,0,0]
+%e Pc1=[-32,34,0], Pc2=[0.6,80,16], Pc3=[-65,89,31], Pc4=[-127,108,2]
+
+Pc=[0,0,0
+    -32,34,0
+    0.6,80,16
+    -65,89,31
+    -127,108,2
+    ];
+%Pc matrice dei punti di controllo
+
+%devo calcolare U perchè sta nell'argomento
+%U vettore dei nodi
+%per calcolare U, mi serve n (è nell'argomento)
+
+n=size(Pc,1)-1; %il numero di punti n=(numero di righe di Pc)-1
+p=3;
+U=bsl.knotsNonPeriodic(n,p);
+res=40; %calcolare 40 punti sulla curva (traccia)
+bsl.createCurve(Pc,p,U,res);
+
+%modificare le coordinate del punto Pc2 in [5.5 66 -0.5] e osservare quanti
+%rami di curva sono influenzati dalla modifica
+Pc(3,:)=[5.5 66 -0.5]; %sostituisco la 3a riga con [5.5 66 -0.5]
+bsl.createCurve(Pc,p,U,res); %ricalcola tutto
+
+%esportare la curva per modificarla in SolidWorks
+tlow=0;
+tup=1;
+Pbs=bsl.getBsplinePoint(Pc,p,U,tlow,tup,res); %calcola i punti della B-spline
+bsl.writePointonFile("Punti_quesito3",Pbs); %scrive i punti in un file txt
+
+
+
+
 
 
 
