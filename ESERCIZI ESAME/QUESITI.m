@@ -128,3 +128,48 @@ tlow=0;
 tup=1;
 Pbs=bsl.getBsplinePoint(Pc,p,U,tlow,tup,res); %calcola i res punti della b-spline
 bsl.writePointonFile("punti_quesito4",Pbs); %esporta i punti della curva
+
+%% QUESITO5
+
+clc
+clear all
+
+%pi è il piano di normale V passante per il punto P0
+%omega_pi è la terna solidale a pi definita in modo tale che l'asse z
+%locale coincida con V, mentre l'origine è il punto P0
+%l'asse locale x deve essere calcolato in modo tale da coincidere col
+%versore diretto dal punto P0 a P1
+%la terna omega_0 è quella globale, mentre omega_pi è locale
+
+%DATI
+V=[1,1,1]; %versore normale al piano pi
+P0=[0,5,-4]; %punto di origine della terna omega_pi
+P1=[-0.3,6,-4.7]; %punto di origine della terna omega_0
+
+%CALCOLO I VERSORI
+%l'asse x locale deve essere calcolato in modo tale da coincidere con col
+%versore diretto dal punto P0 a P1
+vx=(P0-P1)/norm(P0-P1);
+%l'asse z locale coincide con V
+vz=V/norm(V);
+%l'asse y locale è ortogonale per definizione a x e z
+vy=cross(vz,vx);
+
+%nella terma terna_pi definire il ramo di parabola di versore diretto da P0
+%a P1. nella terna omega_pi definire il ramo di parabola di equazione
+%f(x)=y=x.^2 con x appartenente all'intervallo [-2,2]. campionare la funzione
+%con passo 0.5
+
+x=-2:0.5:2; %vettore che campiona la funzione
+y=x.^2;
+Q=[x;y]'; %matrice dei punti campionati
+
+%calcolare la matrice di trasformazione 4x4 T0_pi per passare dalla terna
+%locale a quella globale
+
+%calcolare la curva b-spline di grado p=2 che interpola i punti campionati
+p=2;
+res=100; 
+[Pc,U]=bsl.globalCurveInterp(Q,p); %interpolazione globale di Q con la b-spline
+bsl.createCurve(Pc,p,U,res);
+title("curva b-spline nella terna globale");
