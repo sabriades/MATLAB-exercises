@@ -98,7 +98,7 @@ bsl.createCurve(Pc,p,U,res); %ricalcola tutto
 tlow=0;
 tup=1;
 Pbs=bsl.getBsplinePoint(Pc,p,U,tlow,tup,res); %calcola i punti della B-spline
-bsl.writePointonFile("Punti_quesito3",Pbs); %scrive i punti in un file txt
+bsl.writePointonFile("Punti_quesito3.txt",Pbs); %scrive i punti in un file txt
 
 %% QUESITO4
 
@@ -127,7 +127,7 @@ bsl.plotCloudPoint(Q,msize); %plotta la nuvola di punti
 tlow=0;
 tup=1;
 Pbs=bsl.getBsplinePoint(Pc,p,U,tlow,tup,res); %calcola i res punti della b-spline
-bsl.writePointonFile("punti_quesito4",Pbs); %esporta i punti della curva
+bsl.writePointonFile("punti_quesito4.txt",Pbs); %esporta i punti della curva
 
 %% QUESITO5
 
@@ -146,7 +146,7 @@ V=[1,1,1]; %versore normale al piano pi
 P0=[0,5,-4]; %punto di origine della terna omega_pi
 P1=[-0.3,6,-4.7]; %punto di origine della terna omega_0
 
-%CALCOLO I VERSORI
+%CALCOLO I VERSORI: assi locali 
 %l'asse x locale deve essere calcolato in modo tale da coincidere con col
 %versore diretto dal punto P0 a P1
 vx=(P0-P1)/norm(P0-P1);
@@ -164,12 +164,38 @@ x=-2:0.5:2; %vettore che campiona la funzione
 y=x.^2;
 Q=[x;y]'; %matrice dei punti campionati
 
-%calcolare la matrice di trasformazione 4x4 T0_pi per passare dalla terna
-%locale a quella globale
-
 %calcolare la curva b-spline di grado p=2 che interpola i punti campionati
+%nella terna locale
 p=2;
 res=100; 
 [Pc,U]=bsl.globalCurveInterp(Q,p); %interpolazione globale di Q con la b-spline
+figure;
 bsl.createCurve(Pc,p,U,res);
+title("curva b-spline nella terna locale");
+
+%calcolare la matrice di trasformazione 4x4 T0_pi per passare dalla terna
+%locale omega_pi a quella globale omega_0
+Tpi_0=[vx',vy',vz',P0'
+    0,0,0,1]; %matrice per il passaggio dalla terna locale a globale
+T0_pi=inv(Tpi_0); %matrice per il passaggio dalla terna globale a locale
+
+%Pc: punti di controllo nella terna locale
+%Pcg: punti di controllo nella terna globale
+
+%calcolare la bspline nella terna globale omega_0:
+Pc(:,3)=0;
+Pc(:,4)=1;
+for i=1:size(Pc,1)
+    Pcg(:,i)=Tpi_0*Pc(i,:)';
+end
+Pcg=Pcg';
+n=size(Pcg,1)-1;
+Ug=bsl.knotsNonPeriodic(n,p); %calcola il vettore dei nodi Ug
+figure;
+bsl.createCurve(Pcg,p,Ug,res);
 title("curva b-spline nella terna globale");
+
+%esportare la curva b-spline nella terna globale omega_0
+Pbs=bsl.getBsplinePoint(Pc,p,U,0,1,res);
+bsl.writePointonFile("bspline_globale.txt",Pbs);
+
