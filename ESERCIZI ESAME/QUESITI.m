@@ -151,7 +151,7 @@ P1=[-0.3,6,-4.7]; %punto di origine della terna omega_0
 %versore diretto dal punto P0 a P1
 vx=(P0-P1)/norm(P0-P1); %versore diretto da P0 a P1
 %l'asse z locale coincide con V
-vz=V/norm(V); %vz coincide col versore di V
+vz=V/norm(V);
 %l'asse y locale è ortogonale per definizione a x e z
 vy=cross(vz,vx); %prodotto vettoriale tra vz e vx. vy sarà ortogonale a essi
 
@@ -182,7 +182,7 @@ T0_pi=inv(Tpi_0); %matrice per il passaggio dalla terna globale a locale
 %Pc: punti di controllo nella terna locale
 %Pcg: punti di controllo nella terna globale
 
-%calcolare la bspline nella terna globale omega_0:
+%calcolare la b-spline nella terna globale omega_0:
 Pc(:,3)=0;
 Pc(:,4)=1;
 for i=1:size(Pc,1)
