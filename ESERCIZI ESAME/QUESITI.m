@@ -149,11 +149,11 @@ P1=[-0.3,6,-4.7]; %punto di origine della terna omega_0
 %CALCOLO I VERSORI: assi locali 
 %l'asse x locale deve essere calcolato in modo tale da coincidere con col
 %versore diretto dal punto P0 a P1
-vx=(P0-P1)/norm(P0-P1);
+vx=(P0-P1)/norm(P0-P1); %versore diretto da P0 a P1
 %l'asse z locale coincide con V
-vz=V/norm(V);
+vz=V/norm(V); %vz coincide col versore di V
 %l'asse y locale è ortogonale per definizione a x e z
-vy=cross(vz,vx);
+vy=cross(vz,vx); %prodotto vettoriale tra vz e vx. vy sarà ortogonale a essi
 
 %nella terma terna_pi definire il ramo di parabola di versore diretto da P0
 %a P1. nella terna omega_pi definire il ramo di parabola di equazione
