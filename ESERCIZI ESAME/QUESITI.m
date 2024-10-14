@@ -120,7 +120,7 @@ bsl.createCurve(Pc,p,U,res);
 title("b-spline");
 
 %test plottaggio della nuvola di punti
-msize=6; % msize - dimensione grafica del punto
+msize=8; % msize - dimensione grafica del punto
 bsl.plotCloudPoint(Q,msize); %plotta la nuvola di punti
 
 %esportare la curva in SolidWorks
