@@ -25,7 +25,7 @@ Pc=[0,0,0
     0.5,-1,0
     2,-1,0
     2.5,0.5,0
-    ]; %matrice dei punti di controllo
+    ]; %vettore dei punti di controllo
 Pc(:,4)=1;
 Pco=Pc; %vettore dei punti di controllo in coordinate omogenee
 disp("vettore Pco");
@@ -41,6 +41,7 @@ V=[1,1,0]; %normale al pi
 
 %calcolo del versore di V:
 versV=V/norm(V); %versore di V
+disp("versore di V");
 disp(versV);
 versV(:,4)=1; %versore di V in coordinate omogenee
 versVo=versV;
@@ -88,5 +89,68 @@ bsl.createCurve(Pcr,p,U,res);
 title("curva riflessa");
 
 
+%% ESERCITAZIONE3: RIFLESSIONE
+
+clc
+clear all
+
+%Calcolare la riflessione, rispetto a un piano passante per P0 e con 
+%normale P1-P0, della B-Spline caratterizzata dai seguenti Pc:
+%Pc=[0 0 0; 0 2 0; 2 2 0; 2 0 0]
+
+Pc=[0,0,0
+    0,2,0
+    2,2,0
+    2,0,0
+    ]; %vettore dei punti di controllo
+Pco=Pc;
+Pco(:,4)=1; %ho converto Pc in coordinate omogenee
+%Pco:vettore dei punti di controllo in coordinate omogenee
+p=1; %grado della curva
+n=size(Pc,1)-1; %numero di punti di controllo -1
+%size(Pc,1)-1: numero di righe di Pc
+U=bsl.knotsNonPeriodic(n,p); %calcolo vettore dei nodi U
+res=100;
+bsl.createCurve(Pc,p,U,res); %plot b-spline
+title("curva b-spline");
+view(3); %vediamo la curva in 3d
+
+%dati del piano pi. piano pi definito da (P0,N0)
+%N0 normale (in questo caso)=(P1-P0)
+P0=[0,0,0];
+P0o=[0,0,0,1];
+P1=[0,2,0];
+V=P1-P0;
+versV=V/norm(V); %versore di V
+disp("versore di V");
+disp(versV);
+versVo=versV;
+versVo(:,4)=1; %lo trasformo in coordinate omogenee
+disp("versore di V omogeneo");
+disp(versVo);
+
+%trasformazione di riflessione
+%definisco la matrice identità
+I=eye(3,3);
+
+%calcolo la matrice di trasformazione col ciclo for
+for i=1:size(Pc,1)
+    d=(P0-Pc(i,:))*versV';
+    rif=[2*d*versV(1)
+        2*d*versV(2)
+        2*d*versV(3)
+        ];
+    T=I;
+    T(:,4)=rif;
+    T(4,4)=1;
+    Pcr(:,i)=T*Pco(i,:)';
+end
+
+%plotto la curva
+figure;
+bsl.createCurve(Pcr',p,U,res);
+title("curva riflessa");
+view(3);
 
 
+%% ESERCIZIO3 - ALTERNATIVA: RIFLESSIONE
