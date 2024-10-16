@@ -362,4 +362,61 @@ figure();
 bsl.createCurve(Pcr,p,U,res);
 title("curva riflessa");
 view(3);
-   
+
+%% ESERCITAZIONE 5 - SCALA
+
+clc
+clear all
+
+%calcola la curva b-spline con p=4 avente Pc. 
+Pc=[0,0,0
+    -0.5,1,0
+    2,1,0
+    0.5,1,0
+    2,-1,0
+    2.5,0.5,0
+    ];
+
+Pco=Pc;
+Pco(:,4)=1;
+
+%plot curva
+p=4;
+res=100;
+n=size(Pc,1)-1;
+U=bsl.knotsNonPeriodic(n,p);
+subplot(1,2,1);
+bsl.createCurve(Pc,p,U,res);
+title("b-spline");
+
+
+%calcola la curva trasformata mediante scala secondo i fattori Sxyz dati,
+%rispetto al P0
+%definire gli sxyz:
+sx=0.5;
+sy=0.25;
+S=[sx,0,0,0
+    0,sy,0,0
+    0,0,1,0
+    0,0,0,1
+    ]; %matrice di scala
+I=eye(3,3); %matrice identità
+for i=1:length(Pc)
+    T01=I;
+    %P0=[-2,1,0]
+    P0=[-2,1,0];
+   % P0o=[-2,1,0,1]; %P0 omogeneo
+    scal=P0;
+    T01(:,4)=scal;
+    T01(4,4)=1;
+    T10=inv(T01);
+    T=T01*S*T10;
+    Pcs(i,:)=T*Pco(i,:)';
+end
+
+Pcs(:,4)=[]; %tolgo la coordinata omogenea
+
+%plot curva scalata
+subplot(1,2,2);
+bsl.createCurve(Pcs,p,U,res);
+title("curva scalata");
