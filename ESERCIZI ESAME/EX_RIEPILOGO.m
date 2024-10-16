@@ -224,7 +224,7 @@ title("curva riflessa");
 view(3);
 
 
-%% ESERCIZIO3 - RIFLESSIONE (alternativa)
+%% ESERCITAZIONE 3 - RIFLESSIONE (alternativa)
 
 clc
 clear all
@@ -295,4 +295,71 @@ title("b-spline riflessa");
 view(3);
 
 
-%% 
+%% ESERCITAZIONE 4 - RIFLESSIONE
+
+clc
+clear all
+
+%sono assegnati i Pc della b-spline. si suppone la curva piana (p=1) e
+%appartenente al piano z=0
+
+Pc=[-1 0 0;
+    0.5 1 0;
+   2 1 0;
+   0.5 -1 0;
+   2 -1 0;
+   4 0.5 0;
+   5 1 0;
+   6 0.5 0;
+   7 -1 0]; %terza coordinata nulla, perché è una curva piana
+Pco=Pc;
+Pco(:,4)=1; %Pc in coordinate omogenee Pco
+
+%plot curva
+n=size(Pc,1)-1;
+p=1;
+U=bsl.knotsNonPeriodic(n,p);
+res=100;
+figure;
+bsl.createCurve(Pc,p,U,res);
+title("b-spline");
+view(3); %vediamo la curva in 3d
+
+%calcolare la curva b-spline ottenuta mediante copia speculare rispetto al
+%piano di equazione y=4
+
+%dati piano
+%piano in forma parametrica (P0, N)
+%mi dice che l'eq del pi è y=4. ricavo P0 e N a partire da questo dato
+%PUNTO: come punto P0 sul piano posso scegliere qualsiasi punto con y=4, ad
+%esempio P0=(0,4,0)
+%NORMALE: normale al piano y=4 -> N=(0,1,0)
+P0=[0,4,0]; %punto del piano
+P0o=P0;
+P0o(:,4)=1; 
+N=[0,1,0]; %normale al pi y=4
+versN=N/norm(N);
+versNo=versN;
+versNo(:,4)=1;
+
+%matrice di trasformazione
+I=eye(3,3); %matrice identità
+for i=1:length(Pc)
+    d=(P0o-Pco(i,:))*versNo';
+    rif=[2*d*versNo(1)
+        2*d*versNo(2)
+        2*d*versNo(3)
+        ];
+    T=I;
+    T(:,4)=rif;
+    T(4,4)=1;
+    Pcr(i,:)=T*Pco(i,:)';
+end
+Pcr(:,4)=[]; %tolto la quarta riga, così lo riporto in coordinate normali
+
+%plot curva riflessa
+figure();
+bsl.createCurve(Pcr,p,U,res);
+title("curva riflessa");
+view(3);
+   
