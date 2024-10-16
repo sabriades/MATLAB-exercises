@@ -5,6 +5,77 @@ clc
 close all
 clear all
 
+
+%% ESERCIZIO1 (QUESITO5) - DA TERNA LOCALE A BLOBALE 
+
+clc
+clear all
+
+%pi è il piano di normale V passante per il punto P0
+%omega_pi è la terna solidale a pi definita in modo tale che l'asse z
+%locale coincida con V, mentre l'origine è il punto P0
+%l'asse locale x deve essere calcolato in modo tale da coincidere col
+%versore diretto dal punto P0 a P1
+%la terna omega_0 è quella globale, mentre omega_pi è locale
+
+%DATI
+V=[1,1,1]; %versore normale al piano pi
+P0=[0,5,-4]; %punto di origine della terna omega_pi
+P1=[-0.3,6,-4.7]; %punto di origine della terna omega_0
+
+%CALCOLO I VERSORI: assi locali 
+%l'asse x locale deve essere calcolato in modo tale da coincidere con col
+%versore diretto dal punto P0 a P1
+vx=(P0-P1)/norm(P0-P1); %versore diretto da P0 a P1
+%l'asse z locale coincide con V
+vz=V/norm(V);
+%l'asse y locale è ortogonale per definizione a x e z
+vy=cross(vz,vx); %prodotto vettoriale tra vz e vx. vy sarà ortogonale a essi
+
+%nella terma terna_pi definire il ramo di parabola di versore diretto da P0
+%a P1. nella terna omega_pi definire il ramo di parabola di equazione
+%f(x)=y=x.^2 con x appartenente all'intervallo [-2,2]. campionare la funzione
+%con passo 0.5
+
+x=-2:0.5:2; %vettore che campiona la funzione
+y=x.^2;
+Q=[x;y]'; %matrice dei punti campionati
+
+%calcolare la curva b-spline di grado p=2 che interpola i punti campionati
+%nella terna locale
+p=2;
+res=100; 
+[Pc,U]=bsl.globalCurveInterp(Q,p); %interpolazione globale di Q con la b-spline
+figure;
+bsl.createCurve(Pc,p,U,res);
+title("curva b-spline nella terna locale");
+
+%calcolare la matrice di trasformazione 4x4 T0_pi per passare dalla terna
+%locale omega_pi a quella globale omega_0
+Tpi_0=[vx',vy',vz',P0'
+    0,0,0,1]; %matrice per il passaggio dalla terna locale a globale
+T0_pi=inv(Tpi_0); %matrice per il passaggio dalla terna globale a locale
+
+%Pc: punti di controllo nella terna locale
+%Pcg: punti di controllo nella terna globale
+
+%calcolare la b-spline nella terna globale omega_0:
+Pc(:,3)=0;
+Pc(:,4)=1;
+for i=1:size(Pc,1)
+    Pcg(:,i)=Tpi_0*Pc(i,:)';
+end
+Pcg=Pcg';
+n=size(Pcg,1)-1;
+Ug=bsl.knotsNonPeriodic(n,p); %calcola il vettore dei nodi Ug
+figure;
+bsl.createCurve(Pcg,p,Ug,res);
+title("curva b-spline nella terna globale");
+
+%esportare la curva b-spline nella terna globale omega_0
+Pbs=bsl.getBsplinePoint(Pc,p,U,0,1,res);
+bsl.writePointonFile("bspline_globale.txt",Pbs);
+
 %% ESERCIZIO2: riflessione
 
 clc
@@ -153,4 +224,75 @@ title("curva riflessa");
 view(3);
 
 
-%% ESERCIZIO3 - ALTERNATIVA: RIFLESSIONE
+%% ESERCIZIO3 - RIFLESSIONE (alternativa)
+
+clc
+clear all
+
+%calcolare la riflessione rispetto a P0 con normale P1-P0 della b-spline
+%caratterizzata dai seguenti Pc
+
+Pc=[0,0
+    0,2
+    2,2
+    2,0
+    ];
+Pc(:,3)=0; %3a colonna di Pc ha valore nullo
+disp("Pc:");
+disp(Pc);
+Pco=Pc; %definisco Pco
+Pco(:,4)=1; %aggiungo la quarta colonna di 1 a Pco
+%Pco in coordinate omogenee
+disp("Pco:");
+disp(Pco);
+
+%caratterizzazione del piano (P0, P1-P0)
+P1=[2,2,0]; %ho aggiunto a P0 e P1 la terza coordinata nulla
+P0=[0,0,0];
+P0o=P0; %definisco P0 omogeneo
+P0o(:,4)=1;
+N=P1-P0; %vettore normale al piano
+versN=N/norm(N); %versore di N
+disp("versN");
+disp(versN);
+versNo=versN;
+versNo(:,4)=1;
+disp("versNo");
+disp(versNo);
+
+%plot della b-spline in coordinate normali
+p=1;
+res=100;
+n=size(Pc,1)-1;
+U=bsl.knotsNonPeriodic(n,p);
+bsl.createCurve(Pc,p,U,res);
+title("b-spline");
+view(3);
+
+%TRASFORMAZIONE DI RIFLESSIONE
+%devo definire la matrice identità e poi fare il ciclo for per la matrice
+%di trasformazione
+
+I=eye(3,3); %matrice identità
+for i=1:length(Pc)
+    d=(P0o-Pco(i,:))*versNo';
+    rif=[2*d*versNo(1)
+        2*d*versNo(2)
+        2*d*versNo(3)
+        ];
+    T=I;
+    T(:,4)=rif;
+    T(4,4)=1; 
+    Pcr(i,:)=T*Pco(i,:)';
+end
+
+Pcr(:,4)=[]; %elimino la 4a colonna per riportarlo alle coordinate normali
+
+%plot curva riflessa
+figure;
+bsl.createCurve(Pcr,p,U,res);
+title("b-spline riflessa");
+view(3);
+
+
+%% 
