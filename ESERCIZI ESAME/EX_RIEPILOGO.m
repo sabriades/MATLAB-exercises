@@ -403,7 +403,6 @@ S=[sx,0,0,0
 I=eye(3,3); %matrice identità
 for i=1:length(Pc)
     T01=I;
-    %P0=[-2,1,0]
     P0=[-2,1,0];
    % P0o=[-2,1,0,1]; %P0 omogeneo
     scal=P0;
@@ -420,3 +419,90 @@ Pcs(:,4)=[]; %tolgo la coordinata omogenea
 subplot(1,2,2);
 bsl.createCurve(Pcs,p,U,res);
 title("curva scalata");
+
+%% ESERCITAZIONE 6: SCALA-RIFLESSIONE
+
+clc
+clear all 
+
+%è assegnato il vettore direzione V=[1,0,0] e P0=[3,0,0]
+%calcola curva b-spline con p=5 avente Pc
+
+Pc=[0,0,0
+    -0.5,1,0
+    2,1,0
+    0.5,-1,0
+    2,-1,0
+    2.5,0.5,0
+];
+Pco=Pc;
+Pco(:,4)=1; %Pc omogeneo
+
+%plot curva
+p=5;
+res=100;
+n=size(Pc,1)-1;
+U=bsl.knotsNonPeriodic(n,p);
+subplot(1,3,1);
+bsl.createCurve(Pc,p,U,res);
+title("bspline");
+
+%dati
+V=[1,0,0];
+versV=V/norm(V);
+versVo=versV;
+versVo(:,4)=1; %versVo omogeneo
+P0=[3,0,0];
+P0o=[3,0,0,1]; %P0 omogeneo
+
+
+%calcola la curva trasformata mediante scala secondo i fattori dati,
+%rispetto all'origine P0=[0,0,0]
+I=eye(3,3); %matrice identità
+sx=0.5;
+sy=0.7;
+sz=0.8;
+S=[sx,0,0,0
+    0,sy,0,0
+    0,0,sz,0
+    0,0,0,1
+    ];
+for i=1:length(Pc)
+    scal=P0;
+    T01=I;
+    T01(:,4)=scal;
+    T01(4,4)=1;
+    T10=inv(T01);
+    T=T01*S*T10;
+    Pcs(i,:)=T*Pco(i,:)';
+end
+
+Pcs(:,4)=[]; %tolgo la coordinata omogenea
+
+%plot curva scalata
+subplot(1,3,2);
+bsl.createCurve(Pcs,p,U,res);
+title("scalata");
+
+%effettuare la riflessione della curva
+Pcso=Pcs;
+Pcso(:,4)=1;
+for i=1:length(Pcs)
+    d=(P0o-Pcso(i,:))*versVo';
+    rif=[2*d*versVo(1)
+        2*d*versVo(2)
+        2*d*versVo(3)
+        ];
+    T=I;
+    T(:,4)=rif;
+    T(4,4)=1;
+    Pcr(i,:)=T*Pcso(i,:)';
+end
+
+Pcr(:,4)=[]; %tolgo la coordinata omogenea
+
+%plot curva riflessa
+subplot(1,3,3);
+bsl.createCurve(Pcr,p,U,res);
+title("riflessa");
+
