@@ -506,3 +506,79 @@ subplot(1,3,3);
 bsl.createCurve(Pcr,p,U,res);
 title("riflessa");
 
+%% ESERCITAZIONE 7: SCALA - TRASLAZIONE
+
+clc
+clear all
+
+%calcola la bspline appartenente al pi z=0 e passante per i punti Q con p=3
+%ed esportali in un file txt
+
+Q=[-1,1,0
+    0,0,0
+    1,1,0
+    2,2,0
+    3,-1,0
+    ]; %vettore dei punti da interpolare
+p=3;
+[Pc,U]=bsl.globalCurveInterp(Q,p);
+Pco=Pc;
+Pco(:,4)=1; %4a colonna di 1 per ottenere le coordinate omogenee
+
+%plot della bspline
+res=100;
+bsl.createCurve(Pc,p,U,res);
+title("bspline");
+Pbs=bsl.getBsplinePoint(Pc,p,U,0,1,res);
+bsl.writePointonFile("ex7_punti.txt",Pbs);
+
+%calcola il numero di rami della curva 
+Uk=bsl.getSpan(U); %calcolo gli intervalli del vettore dei nodi
+numrami=length(Uk); %calcolo numero di rami
+
+%scala la curva rispetto ai coeff s dati nel pi z=15
+sx=0.5; 
+sy=0.5;
+sz=1;
+S=[sx,0,0,0
+    0,sy,0,0
+    0,0,sz,0
+    0,0,0,1
+    ];
+P0=[0,0,0]; %di solito la trasformazione di scala si fa rispetto all'origine
+%degli assi
+I=eye(3,3); 
+for i=1:length(Pc)
+    scal=P0; %scalo la curva rispetto all'origine
+    T01=I;
+    T01(4,:)=scal;
+    T01(4,4)=1;
+    T10=inv(T01);
+    T=T01*S*T10;
+    Pcs(i,:)=T*Pco(i,:)';
+end
+
+%ottengo Pcs in coordinate omogenee
+Pcs(:,4)=[]; %tolgo la 4a coordinata
+
+%plot curva scalata
+%subplot(1,2,2);
+figure;
+bsl.createCurve(Pcs,p,U,res);
+title("curva scalata");
+view(3);
+
+%devo traslare la curva nel pi z=15
+Pcs(:,3)=15; %3a colonna tutti 15
+
+%plot curva scalata e traslata
+figure;
+bsl.createCurve(Pcs,p,U,res);
+title("curva scalata e traslata");
+view(3);
+
+
+%% ESERCITAZIONE 8: SCALA-TRASFORMATA
+
+
+
