@@ -551,7 +551,7 @@ I=eye(3,3);
 for i=1:length(Pc)
     scal=P0; %scalo la curva rispetto all'origine
     T01=I;
-    T01(4,:)=scal;
+    T01(:,4)=scal;
     T01(4,4)=1;
     T10=inv(T01);
     T=T01*S*T10;
@@ -579,6 +579,120 @@ view(3);
 
 
 %% ESERCITAZIONE 8: SCALA-TRASFORMATA
+
+clc
+clear all
+
+%assegnati il vettore direzione V e il P1
+V=[1,1,1]; 
+P1=[0,0,0];
+
+%costruisco una terna locale associata a V e a P1
+versV=V/norm(V);
+B=null(versV); %calcolo della base (nello spazio nullo) di versV
+% null restituisce una matrice i cui colonne formano una base per lo spazio
+% nullo di versV. ottengo una matrice composta da 2
+% colonne, che sono i vettori ortogonali a versV
+%Lo spazio nullo è l'insieme di tutti i vettori che moltiplicati per versV,
+%danno zero con il prodotto scalare
+
+%nel riferimento locale calcola la bspline di p=2 che ha Pc
+Pc=[-1,1,0
+    0,0,0
+    1,1,0
+    ];
+Pco=Pc;
+Pco(:,4)=1; %in coordinate omogenee
+p=2; 
+res=100;
+n=size(Pc,1)-1;
+U=bsl.knotsNonPeriodic(n,p);
+
+%plot bspline
+figure;
+sgtitle("riferimento locale");
+subplot(1,3,1);
+bsl.createCurve(Pc,p,U,res);
+title("bspline");
+
+%calcolare il numero di rami della bspline
+Uk=bsl.getSpan(U);
+
+%calcolare i coseni direttori del vettore V
+cos1=V(1)/norm(V);
+cos2=V(2)/norm(V);
+cos3=V(3)/norm(V);
+
+%calcolare la curva scalata mediante trasformazione di scala coi seguenti
+%fattori e appartenente al pi z=3
+%ovvero devo fare la scala + traslazione in z=3
+sx=0.5;
+sy=0.3;
+sz=0;
+S=[sx,0,0,0
+    0,sy,0,0
+    0,0,sz,0
+    0,0,0,1
+    ]; %matrice di scala
+I=eye(3,3); 
+
+for i=1:length(Pc)
+    scal=P1;
+    T01=I;
+    T01(:,4)=P1;
+    T01(4,4)=1;
+    T10=inv(T01);
+    T=T01*S*T10;
+    Pcso(i,:)=T*Pco(i,:)';
+end
+
+Pcs=Pcso;
+Pcs(:,4)=[]; %tolgo la coordinata omogenea
+
+%plot curva scalata
+subplot(1,3,2);
+bsl.createCurve(Pcs,p,U,res);
+title("scalata");
+
+%traslo la curva in z=3
+Pcst=Pcs;
+Pcst(:,3)=3; %3a colonna di 3
+
+%plot curva scalata e traslata
+subplot(1,3,3);
+bsl.createCurve(Pcst,p,U,res);
+title("scalata+traslata");
+
+%calcola la trasformata delle due curve nel riferimento globale omega0
+%matrice di trasformazione dalla terna locale a globale
+T10=[versV',B(:,1),B(:,2)]; 
+%quella da globale a locale è: T01=inv(T10);
+
+%calcola la trasformata delle due curve nel riferimento globale omega0
+%curva scalata
+Pcs0=T10*Pcs'; %nel riferimento globale
+%curva scalata e traslata
+Pcst0=T10*Pcst';
+
+%plot nel riferimento globale
+%plot curva scalata nel riferimento globale 
+figure;
+sgtitle("riferimento globale");
+subplot(1,2,1);
+bsl.createCurve(Pcs0,p,U,res);
+title("scalata");
+%plot curva scalata+traslata nel riferimento globale
+subplot(1,2,2);
+bsl.createCurve(Pcst0,p,U,res);
+title("scalata+traslata");
+
+%esportare le curve bspline
+%esporto curva scalata nel rif globale
+Pbs=bsl.getBsplinePoint(Pcs0,p,U,0,1,res);
+bsl.writePointonFile("scalata_punti.txt",Pbs);
+%esporto curva scalata+traslata nel rif globale
+Pbs=bsl.getBsplinePoint(Pcst0,p,U,0,1,res);
+bsl.writePointonFile("scal_tras_punti.txt",Pbs);
 
 
 
