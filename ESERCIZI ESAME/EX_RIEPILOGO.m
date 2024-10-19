@@ -694,5 +694,80 @@ bsl.writePointonFile("scalata_punti.txt",Pbs);
 Pbs=bsl.getBsplinePoint(Pcst0,p,U,0,1,res);
 bsl.writePointonFile("scal_tras_punti.txt",Pbs);
 
+%% ESERCITAZIONE 9: RODRIGUES (rotazione)
 
+clc
+clear all
 
+%sono assegnati il vettore V=[1,-2,1] e il punto P0=[-2,1,0]
+%e i punti di controllo Pc della bspline con p=4, Pc
+%si suppone una curva piana e appartenente al piano xy
+Pc=[0,0,0
+    -0.5,1,0
+    2,1,0
+    0.5,-1,0
+    2,-1,0
+    2.5,0.5,0
+    ]; 
+Pco=Pc; 
+Pco(:,4)=1; %aggiungo la coordinata omogenea
+
+%plot curva
+n=size(Pc,1)-1; %numero di punti di controllo
+p=4;
+U=bsl.knotsNonPeriodic(n,p); %calcolo vettore dei nodi U
+res=100;
+figure("Name","curve","NumberTitle","off");
+subplot(1,2,1);
+bsl.createCurve(Pc,p,U,res); 
+title("bspline");
+
+%calcolare la bspline ruotata ottenuta facendo ruotare la curva intorno
+%all'asse avente direzione V e passante per P0 di un angolo di 30°
+%dati curva
+V=[1,-2,1];
+P0=[-2,1,0];
+alfa=30;
+alfarad=alfa*pi/180;
+versV=V/norm(V); %versore direzione di V
+versVo=versV;
+versVo(:,4)=1; %coordinate omogenee
+P0o=P0;
+P0o(:,4)=1; %coordinate omogenne 
+%calcolo la matrice di rotazione intorno all'asse (P0,versV)
+W=[0,-versV(3),versV(2)
+    versV(3),0,-versV(1)
+    -versV(2),versV(1),0
+    ]; %tensore assiale del versV
+K=kron(versV,versV'); %prodotto di Kronecker
+R=K+cos(alfarad)*(eye(3,3)-K)+sin(alfarad)*W; %formula di Rodriques
+%R matrice did rotazione
+R(4,4)=1; %per ottenere R matrice 4X4
+%NOTA:. ci sono due procedimenti: nel caso di versV che non passa per
+%l'origine P0=[0,0,0] della terna di riferimento omega_0, eseguo
+%questo procedimento riportato. il secondo caso è una rotazione pura attorno agli
+%assi coordinati
+
+%in questo caso:
+%-traslo l'origine nel punto P0 dato
+%-eseguo la rotazione con la formula di Rodriques
+I=eye(4,4);
+T01=I;
+T01(:,4)=P0o'; %P0o' vettore che metto alla quarta colonna
+T01(4,4)=1; %T01 da locale a globale
+T10=inv(T01); %T10 da globale a locale
+T=T01*R*T10;
+%ora trasformo Pc in PcR
+PcRo=T*Pco';
+PcRo=PcRo';
+PcR=PcRo; 
+PcR(:,4)=[]; %tolgo la coordinata omogenea
+
+%plot della curva ruotata
+subplot(1,2,2);
+bsl.createCurve(PcR,p,U,res);
+title("curva ruotata");
+
+%esportare la curva ruotata e quindi i suoi punti
+Pbs=bsl.getBsplinePoint(PcR,p,U,0,1,res);
+bsl.writePointonFile("Rodriques_punti.txt",Pbs);
