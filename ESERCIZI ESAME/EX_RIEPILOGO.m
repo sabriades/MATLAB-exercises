@@ -796,7 +796,7 @@ numrami=length(Uk); %numero di rami
 
 %calcolare e plottare le funzioni di miscelamento
 res=100;
-figure("Name","curva e relative funzioni","NumberTitle","off");
+figure("Name","funzioni e curva","NumberTitle","off");
 subplot(1,2,1);
 N=bsl.drawN(n,p,U,res); %plot delle funzioni di base ovvero funzioni di miscelamento
 title("funzioni di miscelamento");
@@ -808,4 +808,37 @@ title("bspline");
 
 %esporta la curva in solidworks - ovvero esporta i punti
 Pbs=bsl.getBsplinePoint(Pc,p,U,0,1,res);
+bsl.writePointonFile("ex10_punti.txt",Pbs);
+
+%% ESERCITAZIONE 11 - funzioni di miscelamento
+
+clc
+clear all
+
+%a partire da Pc e da p=4, calcola
+%vettore dei nodi della bspline
+Pc=[0 0 0
+    2 2 -3
+    1.5 0 2
+    3 0 3
+    2.5 1.5 1];
+p=4;
+n=size(Pc,1)-1;
+U=bsl.knotsNonPeriodic(n,p);
+
+%le funzioni di base (o miscelamento)
+res=120;
+figure("Name","funzioni e curva","NumberTitle","off");
+subplot(1,2,1);
+N=bsl.drawN(n,p,U,res);
+title("funzioni di miscelamento");
+
+%i punti della curva bspline
+Pbs=bsl.getBsplinePoint(Pc,p,U,0,1,res);
+%esporto i punti come richiesto
 bsl.writePointonFile("ex11_punti.txt",Pbs);
+
+%plot curva
+subplot(1,2,2);
+bsl.createCurve(Pc,p,U,res);
+title("bspline");
