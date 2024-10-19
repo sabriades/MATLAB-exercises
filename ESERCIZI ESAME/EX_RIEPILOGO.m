@@ -771,3 +771,41 @@ title("curva ruotata");
 %esportare la curva ruotata e quindi i suoi punti
 Pbs=bsl.getBsplinePoint(PcR,p,U,0,1,res);
 bsl.writePointonFile("Rodriques_punti.txt",Pbs);
+
+%% ESERCITAZIONE 10 - funzioni di miscelamento
+
+clc
+clear all
+
+%scegli 8 punti di controllo nello spazio 
+Pc=[0 0 0
+    2 2 1 
+    2 3 2
+    3 4 3
+    4 5 4
+    6 5 5 
+    5 7 4
+    8 9 3];
+%considera una bspline di ordine k=3
+%calcola il numero di rami del poligono di controllo
+n=size(Pc,1)-1;
+p=2;
+U=bsl.knotsNonPeriodic(n,p);
+Uk=bsl.getSpan(U); %intervalli del vettore dei nodi
+numrami=length(Uk); %numero di rami
+
+%calcolare e plottare le funzioni di miscelamento
+res=100;
+figure("Name","curva e relative funzioni","NumberTitle","off");
+subplot(1,2,1);
+N=bsl.drawN(n,p,U,res); %plot delle funzioni di base ovvero funzioni di miscelamento
+title("funzioni di miscelamento");
+
+%calcola la curva e plottala
+subplot(1,2,2);
+bsl.createCurve(Pc,p,U,res);
+title("bspline");
+
+%esporta la curva in solidworks - ovvero esporta i punti
+Pbs=bsl.getBsplinePoint(Pc,p,U,0,1,res);
+bsl.writePointonFile("ex11_punti.txt",Pbs);
