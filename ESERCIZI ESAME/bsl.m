@@ -63,6 +63,8 @@ classdef bsl
         function spank=findSpanKnot(u,n,U)
             % calcola lo span-knot index
             % u - parametro della curva (u deve appartenere allo span-knot [ui,ui+1[.. estremo destro aperto
+            % u è il t=# che il prof dà all'esame e devo verificare a quale
+            % intervallo del vettore dei nodi appartiene
             % n - numero di punti di controllo-1
             % U - vettore dei nodi
             
@@ -97,6 +99,7 @@ classdef bsl
             % n - numero di punti di controllo-1
             % U - vettore dei nodi
             % N - vettore delle funzioni di forma [1,n+1]
+            % a cosa serve? calcola le funzioni di base relative a t=#
             
             % i=i-1; // zero-based
             

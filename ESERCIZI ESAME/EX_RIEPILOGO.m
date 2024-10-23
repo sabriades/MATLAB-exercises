@@ -295,7 +295,7 @@ title("b-spline riflessa");
 view(3);
 
 
-%% ESERCITAZIONE 4 - RIFLESSIONE
+%% ESERCITAZIONE 4 - RIFLESSIONE -(uso questo come esempio)
 
 clc
 clear all

@@ -75,7 +75,6 @@ plot3([Ptop2_nv(1), Pbot2_nv(1)], [Ptop2_nv(2), Pbot2_nv(2)], [Ptop2_nv(3), Pbot
 legend('Con variazioni', 'Senza variazioni');
 
 % Titolo e etichette degli assi
-title('Variazione degli estremi nella boccola');
 xlabel('X');
 ylabel('Y');
 zlabel('Z');
