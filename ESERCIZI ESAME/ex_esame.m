@@ -145,7 +145,7 @@ Pcg
 
 %vettore dei nodi
 res=100;
-n=size(Pc,1)-1; 
+n=size(Pcg,1)-1; 
 U=bsl.knotsNonPeriodic(n,p); %vettore dei nodi
 
 %plot curva
@@ -266,7 +266,7 @@ Pcgo=T*Pco';
 Pcgo
 Pcg=Pcgo;
 Pcg(4,:)=[]; %tolgo la coordinata omogenea
-Pcg
+Pcg;
 Pcg=Pcg'; 
 Pcg %punti di controllo nella terna globale 
 
@@ -276,11 +276,11 @@ res=100;
 n=size(Pcg,1)-1;
 U=bsl.knotsNonPeriodic(n,p);
 figure();
-bsl.createCurve(Pc,p,U,res);
+bsl.createCurve(Pcg,p,U,res);
 
 %% esercizio 6
 
-% Definisca 5 punti di controllo a piacere. Grado della curva p=2; t=0.3.
+% Definisca 5 punti di controllo a piacere. Grado della curva p=2; t=0.3
 % Si calcolino le funzioni di base relative a t=0.3
 
 clc
@@ -358,3 +358,81 @@ U=bsl.knotsNonPeriodic(n,p);
 figure("Name","terna globale a locale","NumberTitle","off");
 bsl.createCurve(Pcl,p,U,res);
 title("curva bspline");
+
+%% esercizio 13 - Rodrigues
+
+%calcola e plotta una curva B-spline di p=4 utilizzando Pc arbitrari
+%Realizza una trasformazione della curva attraverso una rotazione 
+%attorno a un asse definito da un vettore V e punto P0
+
+clc
+clear all
+
+Pc=[0 0 0
+-0.5 1 0
+2 1 0
+0.5 -1 0
+2 -1 0
+2.5 0.5 0]; %punti di controllo
+p=4;
+P0=[-2 1 0]; %punto dell'asse
+V=[1 -2 1]; %vettore V che definisce l'asse
+a=30; 
+%arad=30*pi/180;
+%versore V
+versV=V/norm(V); 
+%coordinate omogenee Pco
+Pco=Pc; 
+Pco(:,4)=1; 
+
+%curva bspline
+n=size(Pc,1)-1; 
+res=100; 
+U=bsl.knotsNonPeriodic(n,p);
+figure();
+bsl.createCurve(Pc,p,U,res);
+title("curva bspline");
+
+%trasformazione di rotazione attorno a un asse 
+%matrice di rotazione: Rodrigues 
+K=kron(versV,versV'); %prodotto di Kronecker
+W=[0 -versV(3) versV(2)
+   versV(3) 0 -versV(1)
+   -versV(2) versV(1) 0
+    ];
+I=eye(3,3);
+R=K+cos(a)*(I-K)+sin(a)*W; %Rodrigues
+%R(4,:)=0;
+R(4,4)=1;
+
+%matrice di traslazione rispetto a P0
+T=I;
+T(4,4)=1;
+T(1:3,4)=P0'; 
+Tinv=inv(T);
+%matrice di trasformazione finale:
+Tf=T*R*Tinv; 
+%verifica dimensioni
+T
+R
+Tinv
+%trasformo i punti Pco
+Pcro=Tf*Pco'; 
+Pcro
+Pcr=Pcro; 
+Pcr(4,:)=[];
+Pcr
+Pcr=Pcr'; 
+
+
+%plot curva ruotata
+figure();
+bsl.createCurve(Pcr,p,U,res);
+title("curva ruotata");
+
+
+
+
+
+
+

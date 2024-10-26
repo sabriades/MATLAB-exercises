@@ -368,4 +368,13 @@ classdef bsl
     end
 end
         
-        
+
+%trasformazione di rotazione rispetto a un asse         
+%K=kron(versV,versV'); %prodotto di Kronecker
+%W=[0 -versV(3) versV(2)
+  % versV(3) 0 -versV(1)
+ %  -versV(2) versV(1) 0
+%    ];
+%I=eye(3,3);
+%R=K+cos(a)*(I-K)+sin(a)*W; %Rodrigues
+%a gradi
