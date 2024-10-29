@@ -106,8 +106,8 @@ clear all
 %Si calcolino i punti di controllo della Spline e il plot nella terna globale (con P0
 %definito nella terna globale).
 
-V=[1,1,1];
-P0=[1,1,1];
+V=[1,1,1]; %asse locale
+P0=[1,1,1]; %origine locale
 Pc=[0 0 0
 1 5 7
 2 3 8

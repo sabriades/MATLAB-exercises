@@ -128,3 +128,54 @@ title("funzioni di miscelamento per t=0.7");
 figure("Name","curva bspline","NumberTitle","off");
 bsl.createCurve(Pc,p,U,res);
 title("bspline");
+
+%% esercizio 4
+
+clc
+clear all
+
+%data una terna locale di Pc definita nell'origine P0=[1,2,3] e con asse y
+%orientato lungo il vettore V=[0,0,1], determina i punti nella terna
+%globale e traccia il corrispondente sistema globale. il p=3
+
+Pc=[0 0 0
+    1 2 1
+    2 1 3
+    3 3 4
+    2 4 5];
+p=3;
+P0=[1 2 3]; %origine locale
+V=[0 0 1]; %asse locale
+
+%terna locale
+versV=V/norm(V); 
+B=null(versV); %definisco una base ortonormale 
+versV
+B
+
+%matrice di rotazione
+R=[B(:,1),B(:,2),versV'];
+R
+
+%matrice di trasformazione
+T=[R P0'
+    0 0 0 1];
+T
+
+%porto i Pc nella terna globale
+Pco=Pc; 
+Pco(:,4)=1; %quarta coordinata è 1 
+Pco
+Pcgo=T*Pco'; 
+Pcgo
+%elimino la coordinata omogenea
+Pcg=Pcgo'; 
+Pcg(:,4)=[];
+
+%curva nella terna globale
+n=size(Pcg,1)-1; 
+U=bsl.knotsNonPeriodic(n,p);
+res=100; 
+figure("Name","curva bspline nella terna globale","NumberTitle","off");
+bsl.createCurve(Pcg,p,U,res);
+title("bspline globale");
