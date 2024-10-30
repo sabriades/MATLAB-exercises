@@ -230,7 +230,58 @@ figure("Name","curva bspline nella terna globale","NumberTitle","off");
 bsl.createCurve(Pcg,p,U,res);
 title("bspline globale");
 
+%% esercizio 6 - esame 5
 
+clc
+clear all 
 
+%Definiamo 6 punti di controllo. Supponiamo che questi punti di controllo
+%siano definiti in una terna locale "2" che ha origine in P2 di coordinate
+%[1 0 1]. P2 è definito in una terna locale "1" con origine in P1 con
+%coordinate [0 1 1] e ha l'asse "z" rivolto lungo il vettore di elementi [1
+%1 1]. Come trasformiamo i punti Pc dalla terna locale "2" alla terna
+%globale "1"? Una volta fatto ciò li plottiamo nella terna globale.
+Pc=[0 0 0
+1 2 3
+2 5 4
+7 6 5
+4 8 6
+9 5 2]; %punti locali 2
+P2=[1 0 1]; %origine locale 2
+P1=[0 1 1]; %origine globale 1
+V=[1 1 1]; %asse globale 1
 
+%definisco la terna
+versV=V/norm(V);
+B=null(versV); %base ortonormale
+R=[B(:,1),B(:,2),versV']; %matrice di rotazione
+T21=[R P1'
+    0 0 0 1];
+T21
+
+%traslazione da P2 a P1
+Tr=eye(4,4); %matrice identità 
+Tr(1:3,4)=P1'-P2'; 
+Tr
+
+%trasformazione complessiva
+Tc=Tr*T21; 
+
+%punti globali
+Pco=Pc;
+Pco(:,4)=1; %Pc in coordinate omogenee
+Pcgo=Tc*Pco'; 
+Pcgo=Pcgo';
+Pcg=Pcgo;
+Pcg(:,4)=[];
+Pcg %punti di controllo globali 1 
+
+%plot curva globale 1
+res=100; 
+n=size(Pcg,1)-1;
+p=3;
+U=bsl.knotsNonPeriodic(n,p);
+figure("Name","curva bspline nella terna globale","NumberTitle","off");
+bsl.createCurve(Pcg,p,U,res);
+title("bspline globale");
 

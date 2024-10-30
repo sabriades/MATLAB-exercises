@@ -240,7 +240,7 @@ Pco(:,4)=1;
 %devo passare da P2 a P1. 1: terna globale
 T21=eye(4,4);
 T21
-T21(1:3,4)=P2';
+T21(1:3,4)=P1'-P2';
 T21
 %matrice di trasformazione che mi serve per portarmi nell'origine
 %della terna globale 1 
@@ -262,7 +262,7 @@ T
 %globale 1 P1
 %matrice di trasformazione complessiva
 Tc=T*T21;
-Pcgo=T*Pco'; 
+Pcgo=Tc*Pco'; 
 Pcgo
 Pcg=Pcgo;
 Pcg(4,:)=[]; %tolgo la coordinata omogenea
