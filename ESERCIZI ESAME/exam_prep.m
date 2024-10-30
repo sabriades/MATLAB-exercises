@@ -179,3 +179,58 @@ res=100;
 figure("Name","curva bspline nella terna globale","NumberTitle","off");
 bsl.createCurve(Pcg,p,U,res);
 title("bspline globale");
+
+%% esercizio 5 - esame (d'ausilio) 
+
+clc
+clear all
+
+%Supponiamo di avere un vettore di tutti elementi unitari V=[1 1 1], un punto P0 di
+%coordinate [1 1 1], un set di 5 punti di controllo a piacere definiti nella terna locale con
+%origine P0 e asse "y" orientato lungo V, grado della curva pari a "2".
+%Si calcolino i punti della Spline e il plot nella terna globale (con P0
+%definito nella terna globale).
+
+V=[1 1 1]; %asse locale
+P0=[1 1 1]; %origine locale
+Pc=[0 0 0
+1 5 7
+2 3 8
+4 4 2
+0 1 2]; %Pc definiti nella terna locale
+p=2;
+Pc
+
+%
+versV=V/norm(V); 
+versV
+B=null(versV); %base ortonormale
+B
+%matrice di rotazione R=[u,v,w]
+R=[B(:,1),B(:,2),versV'];
+R
+%d=P0
+T21=[R P0'
+    0 0 0 1]; %trasformazione dalla terna 2 alla 1
+T21
+
+Pco=Pc;
+Pco(:,4)=1; 
+Pcgo=T21*Pco'; 
+
+Pcg=Pcgo';
+Pcg(:,4)=[]; 
+Pcg %punti nella terna globale
+
+%bspline nella terna globale
+res=100; 
+n=size(Pcg,1)-1;
+U=bsl.knotsNonPeriodic(n,p);
+figure("Name","curva bspline nella terna globale","NumberTitle","off");
+bsl.createCurve(Pcg,p,U,res);
+title("bspline globale");
+
+
+
+
+
