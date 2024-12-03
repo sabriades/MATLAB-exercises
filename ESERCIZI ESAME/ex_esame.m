@@ -38,7 +38,7 @@ disp("intervalli di U:");
 disp(Uk);
 numS=size(Uk,1); %numero di tratti in U
 
-%a quale tratto della curva appartiene t=0.8
+%a quale tratto della curva appartiene t=0.6
 t=0.6;
 i=bsl.findSpanKnot(t,n,U); %indice del tratto a cui appartiene t
 disp("indice del tratto a cui appartiene t");
@@ -423,7 +423,6 @@ Pcr=Pcro;
 Pcr(4,:)=[];
 Pcr
 Pcr=Pcr'; 
-
 
 %plot curva ruotata
 figure();
