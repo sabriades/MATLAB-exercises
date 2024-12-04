@@ -285,3 +285,4 @@ figure("Name","curva bspline nella terna globale","NumberTitle","off");
 bsl.createCurve(Pcg,p,U,res);
 title("bspline globale");
 
+
