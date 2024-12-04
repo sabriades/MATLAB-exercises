@@ -249,14 +249,46 @@ clear all
 %Si calcolino i punti della Spline e il plot nella terna globale (con P0
 %definito nella terna globale).
 
-V=[1 1 1]; 
-P0=[1 1 1]; 
+%terna1=locale
+%terna0=globale
+
+V=[1 1 1]; %vettore nella terna1 
+P0=[1 1 1]; %origine della terna1 
 Pc=[0 0 0
 1 5 7
 2 3 8
 4 4 2
-0 1 2]; 
-p=2;
+0 1 2]; %Pc definiti nella terna1 
+p=2; %grado della curva
+%asse "y" orientato lungo V
+versV=V/norm(V);
+B=null(versV);
+R=[B(:,1),B(:,2),versV'];
+T10=[R P0'
+    0 0 0 1];
+T10
+Pco=Pc;
+Pco(:,4)=1; 
+Pco
+Pcog=T10*Pco';
+Pcg=Pcog'; 
+Pcg(:,4)=[];
+Pcg
+
+%curva b-spline nella terna0
+res=100; 
+n=size(Pc,1)-1; 
+U=bsl.knotsNonPeriodic(n,p);
+figure("Name","Fig1 - curva b-spline nella terna0","NumberTitle","off");
+bsl.createCurve(Pcg,p,U,res);
+title("curva b-spline");
+
+%curva b-spline nella terna1
+figure("Name","Fig1 - curva b-spline nella terna 1","NumberTitle","off");
+bsl.createCurve(Pc,p,U,res);
+title("curva b-spline");
+
+
 
 
 
