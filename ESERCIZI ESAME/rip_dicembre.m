@@ -288,10 +288,114 @@ figure("Name","Fig1 - curva b-spline nella terna 1","NumberTitle","off");
 bsl.createCurve(Pc,p,U,res);
 title("curva b-spline");
 
+%% esercizio 4
 
+clc
+clear all
 
+%assegna 7 punti di controllo. p=3, P1=[2,1,2] e vettore N=[0,1,1].
+%calcola la curva riflessa rispetto alla retta che passa per P1 e parallela
+%a N
 
+Pc=[1 2 2
+2 3 3
+3 5 5
+4 6 8
+5 6 8
+6 8 8
+9 10 10]; %punti di controllo
+p=3; %grado della curva
+P1=[2,1,2]; 
+N=[0,1,1]; 
 
+%calcola la curva riflessa rispetto alla retta che passa per P1 e parallela
+%a N
+P1o=P1;
+P1o(:,4)=1; %punto in coordinate omogenee
+versN=N/norm(N);
+versNo=versN;
+versNo(:,4)=1; %versN in coordinate omogenee
+Pco=Pc;
+Pco(:,4)=1; %punti di controllo in coordinate omogenee
 
+%matrice per la trasformazione di riflessione
+I=eye(3,3); %matrice identità
+for i=1:length(Pc)
+    d=(P1o-Pco(i,:))*versNo';
+    rif=[2*d*versNo(1)
+        2*d*versNo(2)
+        2*d*versNo(3)];
+    T=I; 
+    T(:,4)=rif;
+    T(4,4)=1;
+    Pcro(i,:)=T*Pco(i,:)'; 
+end
 
+Pcr=Pcro;
+Pcr(:,4)=[]; %tolgo la quarta colonna - la coordinata omogenea
+Pcr
+
+%plot b-spline
+res=100; 
+n=size(Pc,1)-1; %numero di punti di controllo -1 
+U=bsl.knotsNonPeriodic(n,p);
+figure("Name","Fig1 - curva b-spline","NumberTitle","off");
+bsl.createCurve(Pc,p,U,res);
+title("curva b-spline");
+
+%plot b-spline riflessa
+figure("Name","Fig2 - curva b-spline riflessa","NumberTitle","off");
+bsl.createCurve(Pcr,p,U,res);
+title("curva b-spline riflessa");
+
+%% esercizio 5 
+
+clc
+clear all
+
+%Definiamo 6 punti di controllo. Supponiamo che questi punti di controllo
+%siano definiti in una terna locale "2" che ha origine in P2 di coordinate
+%[1 0 1]. P2 è definito in una terna globale "1" con origine in P1 con
+%coordinate [0 1 1] e ha l'asse "z" rivolto lungo il vettore di elementi [1
+%1 1]. Come trasformiamo i punti Pc dalla terna locale "2" alla terna
+%globale "1"? Una volta fatto ciò li plottiamo nella terna globale.
+Pc=[0 0 0
+1 2 3
+2 5 4
+7 6 5
+4 8 6
+9 5 2];
+%terna2=terna locale
+%terna1=terna globale
+P2=[1 0 1]; %origine della terna2
+P1=[0 1 1]; %origine della terna1
+V=[1 1 1]; %asse terna1
+p=3; %grado della curva
+
+versV=V/norm(V);
+B=null(versV); %base di vettori ortonormali di versV
+R=[B(:,1),B(:,2),versV'];
+T21=[R P1'
+    0 0 0 1]; %matrice di trasformazione da terna2 a terna1
+Pco=Pc;
+Pco(:,4)=1; %Pc in coordinate omogenee
+Pcgo=T21*Pco';
+Pcgo
+Pcg=Pcgo'; 
+Pcg
+Pcg(:,4)=[];
+Pcg
+
+%plot curva b-spline (terna2)
+res=100;
+n=size(Pc,1)-1; 
+U=bsl.knotsNonPeriodic(n,p);
+figure("Name","Fig1 - curva b-spline nella terna2","NumberTitle","off");
+bsl.createCurve(Pc,p,U,res);
+title("curva b-spline nella terna locale");
+
+%plot curva b-spline (terna1)
+figure("Name","Fig2 - curva b-spline nella terna1","NumberTitle","off");
+bsl.createCurve(Pcg,p,U,res);
+title("curva b-spline nella terna globale");
 
