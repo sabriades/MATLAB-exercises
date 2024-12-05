@@ -6,7 +6,7 @@ close all
 clear all
 
 
-%% ESERCIZIO1 (QUESITO5) - DA TERNA LOCALE A BLOBALE 
+%% ESERCIZIO1 (QUESITO5) - DA TERNA LOCALE A GLOBALE 
 
 clc
 clear all

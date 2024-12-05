@@ -266,7 +266,7 @@ Pcgo=Tc*Pco';
 Pcgo
 Pcg=Pcgo;
 Pcg(4,:)=[]; %tolgo la coordinata omogenea
-Pcg;
+Pcg
 Pcg=Pcg'; 
 Pcg %punti di controllo nella terna globale 
 

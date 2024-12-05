@@ -375,27 +375,41 @@ p=3; %grado della curva
 versV=V/norm(V);
 B=null(versV); %base di vettori ortonormali di versV
 R=[B(:,1),B(:,2),versV'];
-T21=[R P1'
+T21=eye(4,4);
+T21(1:3,4)=P1'-P2'; %origine globale - origine locale
+T=[R P1'
     0 0 0 1]; %matrice di trasformazione da terna2 a terna1
+Tc=T*T21; %matrice di trasformazione complessiva
 Pco=Pc;
-Pco(:,4)=1; %Pc in coordinate omogenee
-Pcgo=T21*Pco';
-Pcgo
-Pcg=Pcgo'; 
-Pcg
-Pcg(:,4)=[];
-Pcg
+Pco(:,4)=1; 
+Pcgo=Tc*Pco';
+Pcg=Pcgo';
+Pcg(:,4)=[]; 
+Pcg %punti nella terna globale=terna1
 
-%plot curva b-spline (terna2)
+%plot curva b-spline nella terna1
 res=100;
-n=size(Pc,1)-1; 
+n=size(Pcg,1)-1;
 U=bsl.knotsNonPeriodic(n,p);
-figure("Name","Fig1 - curva b-spline nella terna2","NumberTitle","off");
-bsl.createCurve(Pc,p,U,res);
-title("curva b-spline nella terna locale");
-
-%plot curva b-spline (terna1)
-figure("Name","Fig2 - curva b-spline nella terna1","NumberTitle","off");
+figure("Name","Fig1 - curva b-spline nella terna1","NumberTitle","off");
 bsl.createCurve(Pcg,p,U,res);
 title("curva b-spline nella terna globale");
 
+%plot curva b-spline nella terna2
+n=size(Pc,1)-1;
+U=bsl.knotsNonPeriodic(n,p);
+figure("Name","Fig2 - curva b-spline nella terna2","NumberTitle","off");
+bsl.createCurve(Pc,p,U,res);
+title("curva b-spline nella terna locale");
+
+%% esercizio 5.1 
+
+clc
+clear all
+
+%pi è il piano di normale V passante per il punto P0
+%omega_pi è la terna solidale a pi definita in modo tale che l'asse z
+%locale coincida con V, mentre l'origine è il punto P0
+%l'asse locale x deve essere calcolato in modo tale da coincidere col
+%versore diretto dal punto P0 a P1
+%la terna omega_0 è quella globale, mentre omega_pi è locale
