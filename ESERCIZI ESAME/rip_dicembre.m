@@ -413,3 +413,54 @@ clear all
 %l'asse locale x deve essere calcolato in modo tale da coincidere col
 %versore diretto dal punto P0 a P1
 %la terna omega_0 è quella globale, mentre omega_pi è locale
+
+%terna globale: terna0
+%terna locale: terna1
+
+%nella terna terna_pi definire il ramo di parabola di versore diretto da P0
+%a P1. nella terna omega_pi definire il ramo di parabola di equazione
+%f(x)=y=x.^2 con x appartenente all'intervallo [-2,2]. campionare la funzione
+%con passo 0.5
+
+%Calcolare la matrice di trasformazione 4x4 "T0,π" per passare dalla terna locale a quella globale
+
+V=[1 1 1];
+versV=V/norm(V); %asse z terna1 
+P0=[0 5 -4]; %origine terna1
+P1=[-0.3 6 -4.7];
+X=P1-P0; 
+versX=X/norm(X); %asse x terna1
+vy=cross(versV,versX); %asse y terna1 - cross è il prodotto vettoriale
+
+%campionamento dei punti
+x=-2:0.5:2; %vettore che campiona la funzione nell'intervallo
+%[-2,2] con passo 0.5
+y=x.^2; %equazione della parabola - funzione
+Q=[x;y]'; %matrice dei punti campionati
+%Calcolare la matrice di trasformazione 4x4 "T0,π" per passare dalla terna locale a quella globale
+%passo da terna1 a terna0
+R=[versX',vy',versV'];
+T=[R P1'
+   0 0 0 1];
+
+%curva b-spline nella terna1 - terna locale
+p=2;
+res=100; 
+[Pc,U]=bsl.globalCurveInterp(Q,p); %interpolazione globale di Q con la b-spline
+figure("Name","curva b-spline nella terna1","NumberTitle","off");
+bsl.createCurve(Pc,p,U,res);
+title("curva b-spline nella terna locale");
+
+%definisco i punti di controllo
+Pc(:,3)=0;
+Pc(:,4)=1; %coordinata omogenea
+for i=1:length(Pc)
+    Pcg(:,i)=T*(Pc(i,:))';
+end
+Pcg=Pcg';
+Pcg(:,4)=[];
+
+%curva b-spline nella terna0 - terna globale
+figure("Name","curva b-spline nella terna0","NumberTitle","off");
+bsl.createCurve(Pcg,p,U,res);
+title("curva b-spline nella terna globale");

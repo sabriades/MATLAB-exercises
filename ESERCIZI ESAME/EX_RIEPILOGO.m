@@ -32,7 +32,7 @@ vz=V/norm(V);
 %l'asse y locale è ortogonale per definizione a x e z
 vy=cross(vz,vx); %prodotto vettoriale tra vz e vx. vy sarà ortogonale a essi
 
-%nella terma terna_pi definire il ramo di parabola di versore diretto da P0
+%nella terna terna_pi definire il ramo di parabola di versore diretto da P0
 %a P1. nella terna omega_pi definire il ramo di parabola di equazione
 %f(x)=y=x.^2 con x appartenente all'intervallo [-2,2]. campionare la funzione
 %con passo 0.5
