@@ -493,3 +493,48 @@ res=100;
 figure("Name","funzioni di base relative a t=0.3", "NumberTitle","off");
 bsl.drawN(n,p,U,res);
 title("funzioni di base");
+
+%% esempio 1 (reference guide bsl)
+
+clc
+clear all
+Pc=[0 0 
+    -0.5 1
+    2 1 
+    0.5 1
+    2 -1
+    2.5 0.5]; %punti di controllo
+
+%calcolare le curve b-spline dal grado 2 fino a quello 5
+%calcolare 100 punti per ogni curva
+n=size(Pc,1)-1;
+res=100; 
+figure();
+for i=2:5
+    p=i;
+U=bsl.knotsNonPeriodic(n,p);
+figure("Name","Curva b-spline con p="+num2str(i),"NumberTitle","off");
+bsl.createCurve(Pc,p,U,res);
+title("Curva di grado p="+num2str(i));
+end
+
+%% alternativa 
+
+clc 
+clear all
+Pc=[0 0 
+    -0.5 1
+    2 1 
+    0.5 1
+    2 -1
+    2.5 0.5]; %punti di controllo
+res=100; 
+p=2:5;
+%ax=axes();
+figure("Name","curve plottate con p=2:5","NumberTitle","off");
+title("curve b-spline");
+n=size(Pc,1)-1; 
+for i=1:length(p)
+    U=bsl.knotsNonPeriodic(n,p(i));
+    bsl.createCurve(Pc,p(i),U,res);
+end

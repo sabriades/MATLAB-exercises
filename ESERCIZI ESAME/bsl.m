@@ -343,7 +343,7 @@ classdef bsl
         %%
         function plotCloudPoint(Q,msize)
             % plotta nuvola di punti
-            % msize - dimensione grafica del punto
+            % msize - dimensione grafica del punto - marker grafico
             
             nc=size(Q,2);
             
