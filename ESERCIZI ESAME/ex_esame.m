@@ -299,7 +299,8 @@ i=bsl.findSpanKnot(0.3,n,U); %t=0.3
 N=bsl.basicFunctionBspline(i,0.3,p,n,U); %calcolo delle funzioni base relative a t=0.3
 res=100;
 figure("Name","funzioni di base con t=0.3","NumberTitle","off");
-N=bsl.drawN(n,p,U,res); 
+bsl.drawN(n,p,U,res); 
+
 
 %% esercizio 7 - terna globale a locale 
 

@@ -402,7 +402,7 @@ figure("Name","Fig2 - curva b-spline nella terna2","NumberTitle","off");
 bsl.createCurve(Pc,p,U,res);
 title("curva b-spline nella terna locale");
 
-%% esercizio 5.1 
+%% esercizio 5.1 (quesito 5)
 
 clc
 clear all
@@ -464,3 +464,32 @@ Pcg(:,4)=[];
 figure("Name","curva b-spline nella terna0","NumberTitle","off");
 bsl.createCurve(Pcg,p,U,res);
 title("curva b-spline nella terna globale");
+
+%% esercizio 6
+
+clc
+clear all
+
+% Definisca 5 punti di controllo a piacere. Grado della curva p=2; t=0.3
+% Si calcolino le funzioni di base relative a t=0.3
+
+Pc=[0,0,0
+    -0.5,1,0
+    2,1,0
+    0.5,-1,0
+    2,-1,0
+    2.5,0.5,0
+    ]; %punti di controllo
+p=2; 
+
+n=size(Pc,1)-1; %numero di punti di controllo
+U=bsl.knotsNonPeriodic(n,p); %vettore dei nodi
+i=bsl.findSpanKnot(0.3,n,U); %span index - indice che mi dice in quale 
+%intervallo di U si trova il valore t cercato
+disp("l'intervallo corrispondente è");
+disp([U(i+1),U(i+2)])
+N=bsl.basicFunctionBspline(i,0.3,p,n,U); %sono le relative funzioni
+res=100; 
+figure("Name","funzioni di base relative a t=0.3", "NumberTitle","off");
+bsl.drawN(n,p,U,res);
+title("funzioni di base");
