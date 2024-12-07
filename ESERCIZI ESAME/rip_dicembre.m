@@ -538,3 +538,191 @@ for i=1:length(p)
     U=bsl.knotsNonPeriodic(n,p(i));
     bsl.createCurve(Pc,p(i),U,res);
 end
+
+%% esercizio 7 
+
+clc
+clear all
+
+%Definisca 7 punti di controllo e p=3. Supponiamo che questi punti siano
+%definiti nella terna globale. Supponiamo che abbiamo una terna locale con
+%origine nel punto P1 di coordinate [2 1 1] e l'asse z di questa è orientata lungo
+%il vettore V di componenti [1 1 1]. Fare la traformazione delle coordinate dei punti di
+%controllo dalla terna globale alla terna locale. Quindi bisogna plottare la curva nella terna locale
+
+%terna globale: terna0
+%terna locale: terna1
+
+Pc=[0 0 0
+1 2 3
+2 3 4
+5 7 3
+5 6 4
+4 7 8
+3 4 7
+4 6 7];
+p=3;
+P1=[2 1 1]; %origine terna1
+V=[1 1 1]; %asse z terna1
+
+versV=V/norm(V); 
+B=null(versV);
+R=[B(:,1),B(:,2),versV'];
+T10=[R P1'
+    0 0 0 1];
+Pco=Pc;
+Pco(:,4)=1; 
+Pcgo=T10*Pco';
+Pcg=Pcgo';
+Pcg(:,4)=[];
+
+%plottaggio curva nella terna1
+res=100; 
+n=size(Pc,1)-1; 
+U=bsl.knotsNonPeriodic(n,p);
+subplot(1,2,1);
+bsl.createCurve(Pc,p,U,res);
+%view(3);
+title("b-spline nella terna locale");
+
+%plottaggio curva nella terna1
+n=size(Pcg,1)-1; 
+U=bsl.knotsNonPeriodic(n,p);
+subplot(1,2,2);
+bsl.createCurve(Pcg,p,U,res);
+title("b-spline nella terna globale");
+
+%% esercizio 8
+
+clc
+clear all
+
+%Definisca 6 punti di controllo a piacere (nella terna locale quindi li chiamo Pc) e grado della curva p=3.
+%Supponiamo che questi punti di controllo siano definiti nella terna locale
+%che ha origine in P1 che ha coordinate [2 1 0]. L'asse x di questa terna è
+%orientato lungo il vettore V di coordinate [1 1 1]. Faccia la
+%trasformazione e quindi il plot della curva nella terna globale.
+
+Pc=[0.5 1 1.2
+    1 0.2 -1
+    0.3 -1 0.8
+    1 0 0.3
+    0 1 0.5
+    0.3 -0.2 1];
+p=3;
+V=[1 1 1];
+P1=[2 1 0];
+
+%praticamente uguale a quello di prima. lo faccio un'altra volta per
+%ripassare
+
+%% esercizio 9
+
+clc
+clear all
+
+% Definisca 6 punti di controllo a piacere. Ipotizzo che questi punti di
+% controllo siano definiti in una terna locale che ha centro nel punto
+% P1=[1 1 0] e che l'asse y di questa terna sia orientato lungo il vettore
+% V =[1 1 1]. Fare trasformazione della curva in coordinate globali e
+% plottare. Il grado della curva è p=3;
+
+%terna locale: terna1
+%terna globale: terna0
+
+Pc1=[0 0 0
+    1 2 3
+    5 7 3
+    0 1 0
+    6 3 4
+    3 2 9];
+p=3;
+P1=[1 1 0]; %origine terna1
+V=[1 1 1]; %asse y terna1
+
+versV=V/norm(V); 
+B=null(versV);
+R=[B(:,1),versV',B(:,2)];
+%e poi come prima. vado avanti quando devo ripetere
+
+%% esercizio 10
+
+clc
+clear all
+
+%Definisca un set di 5 punti di controllo a piacere. Esegua la specchiatura
+%(riflessione)
+%di questi punti rispetto al piano xy
+Pc=[0 0 0
+    0 2 1
+    2 3 1
+    2 4 5
+    6 7 8];
+N=[0 0 1]; %normale del piano xy (la coordinata non nulla è z)
+%un piano xy è definito da z=0
+P0=[0 0 0];
+P0o=P0;
+P0o(:,4)=1; 
+Pco=Pc;
+Pco(:,4)=1; 
+No=N;
+No(:,4)=0; %normale in coordinate omogenee
+I=eye(3,3);
+for i=1:length(Pco)
+    d=(P0o-Pco(i,:))*No';
+    rif=[2*d*No(1)
+        2*d*No(2)
+        2*d*No(3)];
+    T=I; 
+    T(:,4)=rif;
+    T(4,4)=1;
+    Pcro(i,:)=T*Pco(i,:)';
+end
+Pcr=Pcro;
+Pcr(:,4)=[];
+
+%plot della curva
+res=100; 
+p=3; 
+n=size(Pc,1)-1; 
+U=bsl.knotsNonPeriodic(n,p);
+figure("Name","curva b-spline","NumberTitle","off");
+subplot(1,2,1);
+bsl.createCurve(Pc,p,U,res);
+view(3);
+title("curva b-spline"); 
+
+%plot della curva riflessa
+U=bsl.knotsNonPeriodic(n,p);
+subplot(1,2,2);
+bsl.createCurve(Pcr,p,U,res);
+view(3)
+title("curva b-spline riflessa"); 
+
+%plottaggio dei punti Pc
+figure("Name","plottaggio punti Pc","NumberTitle","off");
+plot3(Pc(:,1),Pc(:,2),Pc(:,3),"LineWidth",2);
+
+%plottaggio dei punti Pcr
+figure("Name","plottaggio punti Pcr","NumberTitle","off");
+plot3(Pcr(:,1),Pcr(:,2),Pcr(:,3),"LineWidth",2);
+
+%% esercizio 11 
+
+clc
+clear all 
+
+%%Prenda un set di 5 punti di controllo a piacere. Poniamo t=0.7. Poniamo
+%%ordine della curva pari a 3 (k=3). Quanti elementi avrà il vettore "U" e
+%%quali sono questi elementi? Poi usi il comando per calcolare il vettore
+%%dei nodi e fare il confronto per vedere se quello che aveva previsto si
+%%verifichi effettivamente anche nel calcolo. Quanti tratti avrà la nostra
+%%curva?
+
+Pc=[1 3 5
+    7 3 9
+    1 7 9
+    7 0 3
+    7 9 4];
+t=0.7;
+k=3;

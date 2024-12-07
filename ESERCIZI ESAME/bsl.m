@@ -378,3 +378,16 @@ end
 %I=eye(3,3);
 %R=K+cos(a)*(I-K)+sin(a)*W; %Rodrigues
 %a gradi
+
+%riflessione 
+
+%for i=1:length(Pco)
+ %   d=(P0o-Pco(i,:))*No';
+  %  rif=[2*d*No(1)
+   %     2*d*No(2)
+    %    2*d*No(3)];
+   % T=I; 
+   % T(:,4)=rif;
+    %T(4,4)=1;
+    %Pcro(i,:)=T*Pco(i,:)';
+%end
