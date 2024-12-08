@@ -405,7 +405,7 @@ I=eye(3,3);
 R=K+cos(a)*(I-K)+sin(a)*W; %Rodrigues
 %R(4,:)=0;
 R(4,4)=1;
-
+R
 %matrice di traslazione rispetto a P0
 T=I;
 T(4,4)=1;

@@ -767,6 +767,128 @@ n=size(Pc,1)-1; %in questo caso n=4
 U=bsl.knotsNonPeriodic(n,p);
 plot3(Pc(:,1),Pc(:,2),Pc(:,3),"LineWidth",2); 
 
+%% esercizio 13
+
+clc
+clear all
+
+%Sono assegnati il vettore direzione V, pto P0, pti di controllo e grado
+%curva pari a 4. plottare la curva originaria e quella ruotata attorno
+%all'asse
+
+Pc=[0 0 0
+    -0.5 1 0
+    2 1 0
+    0.5 -1 0
+    2 -1 0
+    2.5 0.5 0];
+p=4;
+P0=[-2 1 0];
+V=[1 -2 1];
+res=100;
+alfa=30; %angolo di rotazione
+
+versV=V/norm(V); 
+K=kron(versV,versV'); %prodotto di kronecker di V
+I=eye(3,3);
+W=[0 -versV(3) versV(2)
+   versV(3) 0 -versV(1)
+   -versV(2) versV(1) 0];
+R=K+cos(alfa)*(K-I)+sin(alfa)*W;
+R(4,4)=1; %coordinata omogenea
+T=eye(4,4);
+P0o=P0;
+P0o(:,4)=1;
+T(:,4)=P0o;
+Tinv=inv(T);
+Tf=T*R*Tinv; %trasformazione finale 
+Pco=Pc; 
+Pco(:,4)=1; 
+Pcro=Tf*Pco'; 
+Pcr=Pcro';
+Pcr(:,4)=[];
+
+res=100; 
+n=size(Pc,1)-1; 
+U=bsl.knotsNonPeriodic(n,p);
+subplot(1,2,1); 
+bsl.createCurve(Pc,p,U,res); %originaria
+%view(3);
+title("curva originaria");
+axis equal; 
+xlabel("x");
+ylabel("y");
+zlabel("z");
+
+subplot(1,2,2); 
+bsl.createCurve(Pcr,p,U,res); %ruotata
+%view(3);
+title("curva ruotata");
+axis equal; 
+xlabel("x");
+ylabel("y");
+zlabel("z");
+
+%% esercizio 14
+
+clc
+clear all
+
+%Inserisca 5 punti di controllo a piacere definiti nella terna globale. 
+%Supponiamo grado della curva pari a 2 (p=2)e supponiamo di avere un punto Po di coordinate [1 0 1] 
+%che è l'origine di un'altra terna di riferimento che ha lo stesso orientamento della terna globale (è solo traslata).
+%Come si fa la scala nella terna locale lungo x di 0.5? Dopo aver fatto ciò
+%deve fare un plot affiancato delle due curve nella terna globale (le due
+%curve devono stare nello stesso sistema di riferimento)
+
+%terna globale: terna0
+%terna locale: terna1
+%fare la scala nella terna1 lungo x di sx=0.5
+
+Pc=[0 0 0
+    1 2 3
+    6 7 8
+    -1 3 4
+    7 8 9]; %terna0
+p=2;
+Po=[1 0 1]; %origine terna1 (è una terna traslata)
+
+%Po non è l'origine della terna0, allora 
+%devo portare l'origine della terna globale in Po
+
+Poo=Po;
+Poo(:,4)=1; 
+Tp=[eye(3,3) Po'
+    0 0 0 1]; 
+I=eye(3,3); 
+T=I; 
+T(4,4)=1;
+T(:,4)=Poo';
+sx=0.5; 
+T(1,1)=sx; %tutti gli altri fattori di scala sono nulli in questo caso
+%xk la scala è solo lungo x
+
+Tf=Tp*T*inv(Tp); %trasformazione finale
+
+Pco=Pc; 
+Pco(:,4)=1; 
+Pcso=Tf*Pco'; 
+Pcs=Pcso';
+Pcs(:,4)=[];
+
+res=100; 
+n=size(Pc,1)-1; 
+U=bsl.knotsNonPeriodic(n,p);
+subplot(1,2,1);
+bsl.createCurve(Pc,p,U,res);
+title("curva originale");
+
+subplot(1,2,2);
+bsl.createCurve(Pcs,p,U,res);
+title("curva scalata");
+
+
+
 
 
 
