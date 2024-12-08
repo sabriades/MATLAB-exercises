@@ -725,4 +725,49 @@ Pc=[1 3 5
     7 0 3
     7 9 4];
 t=0.7;
-k=3;
+k=3; %ordine della curva
+%k=p+1. U ha n+k elementi, ovvero n+k+1. n è il numero di punti di
+%controllo -1. p è il grado della curva. allora, n=5-1=4.
+%U ha n+k+1=4+3+1=8 elementi e va da 0 a n-k+2. una volta calcolati gli
+%elementi, li normalizzo dividendoli per il valore più alto di U. 
+%U=[0,0,0,1,2,3,3,3]
+%n-k+2=4-3+2=3. le ripetizioni devono essere 3 all'inizio e alla fine
+%normalizzando: U=[0,0,0,1\3,2\3,3,3,3]=[0,0,0,0.33,0.66,1,1,1]
+n=size(Pc,1)-1; 
+p=k-1;
+U=bsl.knotsNonPeriodic(n,p);
+U
+i=bsl.findSpanKnot(t,n,U); %indice caratteristico del tratto in cui si trova il valore t
+disp("t si trova nell'intervallo");
+disp([U(i+1),U(i+2)])
+%da quanti intervalli è composto il vettore dei nodi? Uk 
+%gli intervalli sono ncurve=n-p+1=4-2+1=3. sono 3 perchè un tratto è [0 0 0], un altro è [0.33 0.66] e
+%l'altro è [1 1 1]
+
+%% esercizio 12
+
+clc
+clear all
+
+%Metta 5 punti di controllo a piacere. Grado della curva p=2. Come è fatto
+%il vettore dei nodi? Determinare i punti della curva con una res=100 e
+%plottarla però non con "createCurve" ma con "plot3".
+Pc=[0 1 2
+    2 5 4
+    3 6 7
+    7 8 5
+    5 2 3];
+p=2;
+res=100;
+n=size(Pc,1)-1; %in questo caso n=4
+%k=p+1=3
+%U va da 0 a n-k+2 e ha n+k+1 elementi. in questo caso da 0 a 4-3+2=3
+%U ha 4+3+1=8 elementi
+%U=[0,0,0,1,2,3,3,3]. Normalizzo: U=[0,0,0,0.33,0.66,1,1,1]
+U=bsl.knotsNonPeriodic(n,p);
+plot3(Pc(:,1),Pc(:,2),Pc(:,3),"LineWidth",2); 
+
+
+
+
+
