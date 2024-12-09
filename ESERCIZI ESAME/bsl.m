@@ -391,3 +391,23 @@ end
     %T(4,4)=1;
     %Pcro(i,:)=T*Pco(i,:)';
 %end
+
+%scala
+
+%P1:origine locale, P0:origine globale
+%caso1: P1=P0
+% Pcscala=S*Pco'
+%caso2: P1 non è P0 
+% Pcscala=T10*S*T01*Pco'
+
+%previsione U: va da 0 a n-k+2, e ha n+k+1 elementi
+%n-k+2=5-5+2=2
+%n+k+1=5+5+1=11
+%n=#Pc-1=5
+%k=p+1=5
+%U=[0,0,0,0,0,1,2,2,2,2,2]=[0,0,0,0,0,0.5,1,1,1,1,1]
+
+%piano xy: ha equazione z=0 -> una normale è N=[0,0,1]
+%se devo fare la riflessione rispetto a y=4:
+%piano di equazione y=4 -> P0=[0 4 0] (punto del piano) 
+%una normale a y=4 potrebbe essere (0,1,0)

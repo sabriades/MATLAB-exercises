@@ -726,7 +726,7 @@ Pc=[1 3 5
     7 9 4];
 t=0.7;
 k=3; %ordine della curva
-%k=p+1. U ha n+k elementi, ovvero n+k+1. n è il numero di punti di
+%k=p+1. U ha n+k+1. n è il numero di punti di
 %controllo -1. p è il grado della curva. allora, n=5-1=4.
 %U ha n+k+1=4+3+1=8 elementi e va da 0 a n-k+2. una volta calcolati gli
 %elementi, li normalizzo dividendoli per il valore più alto di U. 
@@ -889,7 +889,273 @@ title("curva scalata");
 
 
 
+%% RIPASSO
 
 
+%% 11
 
+%a partire dai Pc calcola U, funzioni di base con plot, punti della curva
+%b-spline, plot con res=120
 
+clc
+clear all
+
+Pc=[0 0 0
+    2 2 -3
+    1.5 0 2
+    3 0 3
+    2.5 1.5 1];
+p=4;
+
+%previsione U: U va da 0 a n-k+2 e ha n+k+1 elementi
+%k=p+1=4+1=5 ordine della curva, n=#Pc-1=4
+%U va da 0 a 4-5+2=1 e ha n+k+1=4+5+1=10 elementi
+%U=[0,0,0,0,0,1,1,1,1,1]
+n=size(Pc,1)-1; %numero di punti di controllo -1
+U=bsl.knotsNonPeriodic(n,p);
+res=120; 
+figure("Name","Fig1-funzioni base e curva","NumberTitle","off");
+subplot(1,2,1);
+bsl.drawN(n,p,U,res); %funzioni di base
+title("funzioni base");
+subplot(1,2,2);
+bsl.createCurve(Pc,p,U,res); %curva bspline
+title("bspline");
+figure("Name","punti della curva plottati","NumberTitle","off");
+Pbs=bsl.getBsplinePoint(Pc,p,U,0,1,res); %punti della curva
+plot3(Pbs(:,1),Pbs(:,2),Pbs(:,3),"LineWidth",2);
+
+%% 1
+
+clc
+clear all 
+
+%terna globale: terna0
+%terna locale: terna1
+
+V=[1 1 1]; %normale al piano - terna1
+P0=[0 4 -4]; %origine - terna1
+P1=[-0.3 5 -4.7];
+%asse x locale deve essere calcolato in modo da coincidere col versore
+%diretto da P0 a P1
+D=P1-P0;
+versD=D/norm(D); 
+x=-2:0.5:2; %campiono con passo 0.5
+y=x.^2; 
+Q=[x;y]';
+%calcolo trasformazione per passare da terna1 a terna0
+B=null(versD); %base di vettori ortonormali del versD
+R=[versD',B(:,1),B(:,2)];
+T10=[R P0'
+    0 0 0 1]; %matrice 4x4
+p=2;
+[Pc,U]=bsl.globalCurveInterp(Q,p);
+Pco=Pc; 
+Pco(:,4)=1;
+Pcgo=T10*Pco'; 
+Pcg=Pcgo';
+Pcg(:,4)=[];
+figure("Name","bspline","NumberTitle","off"),
+subplot(1,2,1); 
+bsl.createCurve(Pc,p,U,100); %locale
+title("locale");
+subplot(1,2,2); 
+bsl.createCurve(Pcg,p,U,100);
+title("globale"); 
+Pbs=bsl.getBsplinePoint(Pcg,p,U,0,1,100); %esporto i punti della bspline globale
+bsl.writePointonFile("bspline_globale.txt",Pbs);
+
+%% 2 
+
+clc
+clear all
+
+%riflessione rispetto al piano passante per P0 e di normale N
+
+N=[1,1];
+P0=[0,0];
+Pc=[0,0,0
+    -0.5,1,0
+    2,1,0
+    0.5,-1,0
+    2,-1,0
+    2.5,0.5,0
+    ]; 
+p=4;
+
+%coordinate omogenee
+No=N;
+No(:,4)=1;
+P0o=P0;
+P0o(:,4)=1;
+Pco=Pc;
+Pco(:,4)=1;
+for i=1:length(Pco)
+    d=(P0o-Pco(i,:))*No';
+    rif=[2*d*No(1)
+        2*d*No(2)
+        2*d*No(3)];
+    I=eye(3,3);
+    T=I;
+    T(:,4)=rif;
+    T(4,4)=1; 
+    Pcro(i,:)=T*Pco(i,:)';
+end
+
+Pcr=Pcro;
+Pcr(:,4)=[];
+n=size(Pcr,1)-1;
+U=bsl.knotsNonPeriodic(n,p);
+bsl.createCurve(Pcr,p,U,100);
+
+%% 3 
+
+clc
+clear all
+
+%riflessione:
+%Calcolare la riflessione, rispetto a un piano passante per P0 e con normale P1-P0, della B-Spline
+%caratterizzata dai seguenti Pc:
+%Pc=[0 0 0; 0 2 0; 2 2 0; 2 0 0]
+
+Pc=[0 0 0
+    0 2 0
+    2 2 0
+    2 0 0];
+P0=[0 0 0];
+P1=[2 2 0];
+N=P1-P0;
+
+%coord omogenee
+P0o=P0;
+P0o(:,4)=1;
+P1o(:,4)=1;
+No=N;
+No(:,4)=1; 
+Pco=Pc;
+Pco(:,4)=1;
+
+%riflessione
+for i=1:length(Pco)
+    d=(P0o-Pco(i,:))*No';
+    rif=[2*d*No(1)
+        2*d*No(2)
+        2*d*No(3)];
+    I=eye(3,3);
+    T=I; 
+    T(:,4)=rif;
+    T(4,4)=1; 
+    Pcro(i,:)=T*Pco(i,:)'; 
+end
+
+Pcr=Pcro; 
+Pcr(:,4)=[];
+p=1; 
+n=size(Pc,1)-1; 
+U=bsl.knotsNonPeriodic(n,p);
+figure("Name","riflessione","NumberTitle","off");
+bsl.createCurve(Pcr,p,U,100);
+title("bspline riflessa"); 
+
+%% 5 
+
+clc
+clear all
+
+P0=[-2 1 0];
+Pc=[0 0 0
+    -0.5 1 0
+    2 1 0
+    0.5 -1 0
+    2 -1 0
+    2.5 0.5 0];
+sx=0.5;
+sy=0.25;
+sz=0;
+p=4; 
+
+%scala
+%P1:origine locale, P0:origine globale
+%caso1: P1=P0
+% Pcscala=S*Pco'
+%caso2: P1 non è P0 
+% Pcscala=T10*S*T01*Pco'
+I=eye(3,3);
+I(1,1)=sx;
+I(2,2)=sy;
+I(3,3)=sz;
+S=I;
+S(:,4)=0;
+S(4,4)=1;
+T10=[eye(3,3) P0'
+    0 0 0 1];
+T01=inv(T10);
+Tf=T10*S*T01;
+Pco=Pc;
+Pco(:,4)=1; 
+Pcso=Tf*Pco';
+Pcs=Pcso';
+Pcs(:,4)=[];
+n=size(Pcs,1)-1; 
+U=bsl.knotsNonPeriodic(n,p);
+figure();
+bsl.createCurve(Pcs,p,U,100);
+title("bspline scalata");
+
+%previsione U: va da 0 a n-k+2, e ha n+k+1 elementi
+%n-k+2=5-5+2=2
+%n+k+1=5+5+1=11
+%n=#Pc-1=5
+%k=p+1=5
+%U=[0,0,0,0,0,1,2,2,2,2,2]=[0,0,0,0,0,0.5,1,1,1,1,1]
+
+%% 4
+
+clc
+clear all
+
+%assegnati i punti di controllo Pc della B-Spline, il grado “p” e si supponga che la curva sia piana ed
+%appartenente al piano z=0.
+%• Calcolare la curva B-Spline ottenuta mediante copia speculare rispetto al piano di equazione y=4;
+%• Scrivere l’algoritmo in modo che sia valido al variare del numero di punti di controllo;
+%• Eseguire il plot della curva normale e di quella specchiata.
+
+Pc=[-1 0 0
+    0.5 1 0
+    2 1 0
+    0.5 -1 0
+    2 -1 0
+    4 0.5 0
+    5 1 0
+    6 0.5 0
+    7 -1 0];
+p=2; %curva piana 
+%piano di equazione y=4. una normale potrebbe essere (0,1,0)
+P0=[0 4 0]; 
+N=[0 1 0];
+P0o(:,4)=1;
+No=N;
+No(:,4)=1;
+Pco=Pc;
+Pco(:,4)=1;
+
+%riflessione
+for i=1:length(Pco)
+    d=(P0o-Pco(i,:))*No';
+    rif=[2*d*No(1)
+        2*d*No(2)
+        2*d*No(3)];
+    I=eye(3,3);
+    Tr=I;
+    Tr(:,4)=rif;
+    Tr(4,4)=1; 
+    Pcro(i,:)=Tr*Pco(i,:)';
+end
+
+Pcr=Pcro;
+Pcr(:,4)=[];
+n=size(Pcr,1)-1;
+U=bsl.knotsNonPeriodic(n,p);
+figure();
+bsl.createCurve(Pcr,p,U,100);
+title("bspline riflessa");
