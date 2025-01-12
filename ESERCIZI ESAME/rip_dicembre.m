@@ -33,9 +33,10 @@ figure("Name","Fig1 - funzioni di miscelamento","NumberTitle","off");
 bsl.drawN(n,p,U,res); %plotta le funzioni di miscelamento
 title("funzioni di miscelamento");
 
-%a quale tratto della curva appartiene il parametro t=0.5
+%a quale tratto della curva appartiene il parametro t=0.6
 %devo individuare l'intervallo del vettore dei nodi in cui si trova t=0.6
 Uk=bsl.getSpan(U); 
+Uk
 t=0.6;
 i=bsl.findSpanKnot(t,n,U); 
 disp("indice i del tratto a cui appartiene t=0.6:");
@@ -72,6 +73,7 @@ p=3; %grado della curva
 %plotta le funzioni di base/miscelamento b-spline relative all'insieme di punti
 n=size(Pc,1)-1; 
 U=bsl.knotsNonPeriodic(n,p); %vettore dei nodi
+U
 res=100; %risoluzione della curva (# di punti che la compongono)
 figure("Name","Fig1 - funzioni di base","NumberTitle","off");
 bsl.drawN(n,p,U,res);
@@ -80,6 +82,7 @@ title("funzioni di base");
 %per t=0.5 individua il tratto di curva corrispondente e calcola i valori
 %delle funzioni di miscelamento/base
 Uk=bsl.getSpan(U); %intervalli del vettore dei nodi U
+Uk
 i=bsl.findSpanKnot(0.5,n,U); 
 disp("intervallo del vettore dei nodi contenente t=0.5 è:");
 disp([U(i+1),U(i+2)]);
@@ -320,8 +323,10 @@ Pco(:,4)=1; %punti di controllo in coordinate omogenee
 
 %matrice per la trasformazione di riflessione
 I=eye(3,3); %matrice identità
-for i=1:length(Pc)
-    d=(P1o-Pco(i,:))*versNo';
+for i=1:length(Pc) %restituisce il numero massimo tra righe e colonne. 
+    % in questo caso il numero di righe è maggiore, perciò avrò: 7
+    d=(P1o-Pco(i,:))*versNo'; %metto i al posto delle righe 
+    % (di cui ho calcolato il numero 7)
     rif=[2*d*versNo(1)
         2*d*versNo(2)
         2*d*versNo(3)];
@@ -377,6 +382,7 @@ B=null(versV); %base di vettori ortonormali di versV
 R=[B(:,1),B(:,2),versV'];
 T21=eye(4,4);
 T21(1:3,4)=P1'-P2'; %origine globale - origine locale
+%sto calcolando il vettore che va dall'origine locale a quella globale
 T=[R P1'
     0 0 0 1]; %matrice di trasformazione da terna2 a terna1
 Tc=T*T21; %matrice di trasformazione complessiva
@@ -643,8 +649,8 @@ V=[1 1 1]; %asse y terna1
 versV=V/norm(V); 
 B=null(versV);
 R=[B(:,1),versV',B(:,2)];
-%e poi come prima. vado avanti quando devo ripetere
-
+%e poi come prima. vado avanti quando devo ripetere. 11\01\25
+ 
 %% esercizio 10
 
 clc
@@ -764,8 +770,11 @@ n=size(Pc,1)-1; %in questo caso n=4
 %U va da 0 a n-k+2 e ha n+k+1 elementi. in questo caso da 0 a 4-3+2=3
 %U ha 4+3+1=8 elementi
 %U=[0,0,0,1,2,3,3,3]. Normalizzo: U=[0,0,0,0.33,0.66,1,1,1]
+%DETERMINO I PUNTI DELLA CURVA 
 U=bsl.knotsNonPeriodic(n,p);
-plot3(Pc(:,1),Pc(:,2),Pc(:,3),"LineWidth",2); 
+Pbs=bsl.getBsplinePoint(Pc,p,U,0,1,res); %calcola i punti della bspline
+figure("Name","punti della bspline","NumberTitle","off");
+plot3(Pbs(:,1),Pbs(:,2),Pbs(:,3),"LineWidth",2); 
 
 %% esercizio 13
 
@@ -787,6 +796,7 @@ P0=[-2 1 0];
 V=[1 -2 1];
 res=100;
 alfa=30; %angolo di rotazione
+a=deg2rad(alfa);
 
 versV=V/norm(V); 
 K=kron(versV,versV'); %prodotto di kronecker di V
@@ -794,7 +804,7 @@ I=eye(3,3);
 W=[0 -versV(3) versV(2)
    versV(3) 0 -versV(1)
    -versV(2) versV(1) 0];
-R=K+cos(alfa)*(K-I)+sin(alfa)*W;
+R=K+cos(a)*(I-K)+sin(a)*W;
 R(4,4)=1; %coordinata omogenea
 T=eye(4,4);
 P0o=P0;
@@ -1159,3 +1169,99 @@ U=bsl.knotsNonPeriodic(n,p);
 figure();
 bsl.createCurve(Pcr,p,U,100);
 title("bspline riflessa");
+
+%% r1
+
+% Supponiamo di avere un vettore di tutti elementi unitari V=[1 1 1], un punto P0 di
+% coordinate [1 1 1], un set di 5 punti di controllo a piacere definiti nella terna locale con 
+% origine P0 e asse "y" orientato lungo V, grado della curva pari a "2".
+% Si calcolino i punti della Spline e il plot nella terna globale (con P0
+% definito nella terna globale).
+
+clc
+clear all
+
+%terna0:globale
+%terna1:locale
+
+% Definizione dei parametri
+V = [1 1 1]; % asse y dev'essere orientato lungo V - terna1
+P0 = [1 1 1]; % origine P0 terna1
+Pc = [0 0 0;
+      1 5 7;
+      2 3 8;
+      4 4 2;
+      0 1 2]; 
+
+p = 2; 
+
+%punti nella terna globale
+versV=V/norm(V); %dev'essere l'asse y
+B=null(versV); %base ortonormale di versV
+R=[B(:,1),B(:,2),versV'];
+T10=[R P0'
+0 0 0 1]; 
+T10
+Pco=Pc; 
+Pco(:,4)=1; 
+Pcgo=T10*Pco';
+Pcg=Pcgo';
+Pcg(:,4)=[]; %Punti terna0
+Pcg
+n=size(Pcg,1)-1; 
+U=bsl.knotsNonPeriodic(n,p);
+figure();
+res=100; 
+bsl.createCurve(Pcg,p,U,res); 
+title("globale");
+
+
+%% Esercizio 4 (trasformazione curva dalla terna globale a quella locale)
+
+clc
+clear all
+close all
+
+% Nelle ipotesi in cui Pc e P1 sono definiti nella terna globale
+% trasformare la curva dalla terna globale a quella locale che ha origine
+% in P1 e asse z orientato lungo V
+Pc=[0 0 0
+1 2 3
+4 5 6
+8 7 9
+5 7 3
+9 2 1
+1 0 2]; %definiti nella terna globale
+p=3; % grado della curva
+P1=[2 3 3]; %definiti nella terna globale
+V=[1 1 1];
+
+versV=V/norm(V);
+B=null(versV);
+R=[B(:,1),B(:,2),versV']; 
+T10=[R P1'
+   0 0 0 1];
+Pco=Pc;
+Pco(:,4)=1; 
+T01=inv(T10); 
+Pclo=T01*Pco'; 
+Pclo
+Pcl=Pclo; 
+Pcl(4,:)=[]; 
+Pcl=Pcl'; 
+Pcl
+
+%bspline locale
+n=size(Pc,1)-1; 
+U=bsl.knotsNonPeriodic(n,p);
+res=100; 
+figure("Name","bspline","NumberTitle","off");
+subplot(1,2,1); 
+title("locale");
+bsl.createCurve(Pcl,p,U,res);
+
+%bspline globale 
+subplot(1,2,2); 
+title("globale"); 
+bsl.createCurve(Pc,p,U,res);
+

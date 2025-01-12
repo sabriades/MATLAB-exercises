@@ -369,7 +369,11 @@ classdef bsl
 end
         
 
-%trasformazione di rotazione rispetto a un asse         
+%trasformazione di rotazione rispetto a un asse
+%CASO1: rot rispetto a un asse passante per l'origine
+%moltiplico solo per R
+
+%CASO2: se V non passa per l'origine terna0:globale
 %K=kron(versV,versV'); %prodotto di Kronecker
 %W=[0 -versV(3) versV(2)
   % versV(3) 0 -versV(1)
@@ -378,8 +382,9 @@ end
 %I=eye(3,3);
 %R=K+cos(a)*(I-K)+sin(a)*W; %Rodrigues
 %a gradi
+%Tf=T*R*Tinv;
 
-%riflessione 
+%riflessione rispetto a un piano (P0,N)
 
 %for i=1:length(Pco)
  %   d=(P0o-Pco(i,:))*No';
@@ -395,9 +400,20 @@ end
 %scala
 
 %P1:origine locale, P0:origine globale
-%caso1: P1=P0
+%caso1: P1=P0 
+%S=[sx 0 0 0
+%   0 sy 0 0
+%   0 0 sz 0
+%   0 0 0  1] uso solo questa
 % Pcscala=S*Pco'
+
 %caso2: P1 non è P0 
+%S=[sx 0 0 0
+%   0 sy 0 0
+%   0 0 sz 0
+%   0 0 0  1]
+%T10=[eye(3,3) P1'
+%     0 0 0 1] traslo l'origine globale nella locale
 % Pcscala=T10*S*T01*Pco'
 
 %previsione U: va da 0 a n-k+2, e ha n+k+1 elementi

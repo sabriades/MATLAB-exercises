@@ -1,50 +1,34 @@
 clc
 clear all
+close all 
 
 Pc=[0 0 0
-1 2 3
-2 5 4
-7 6 5
-4 8 6
-9 5 2];
-P2=[1 0 1];
-P1=[0 1 1];
-V=[1 1 1];
-%Creo matrice di trasformazione che mi consente di passare da P2 a P1 (in
-%questo caso è una matrice di pura traslazione)
-T12=eye(4,4);
-%il vettore traslazione presenterà come componenti le coordinate
-%dell'origine della terna P2 rispetto a P1
-T12(1:3,4)=P2';
-%Nota questa prima matrice di trasformazione passo alla seconda. Per farlo
-%uso lo spazio nullo per ottenere il versore:
-v=V/norm(V);
-%Calcolo la base "B":
-B=null(v);
-%Ricavo la terna:
-terna=[B(:,1) B(:,2) v'];
-%La matrice di trasformazione sarà:
-T01=eye(4,4);
-%Matrice di rotazione:
-T01(1:3,1:3)=terna;
-%Come vettore traslazione avremo le coordinate dell'origine della terna P1
-T01(1:3,4)=P1';
-
-T01
-
-%Matrice di trasformazione complessiva
-T=T01*T12;
-Pc(:,4)=1;
-Pc_trasf=T*Pc';
-Pc_trasf
-Pc_trasf(4,:)=[];
-Pc_trasf=Pc_trasf';
-%Adesso conosco i punti di controllo nella terna omega con 0
-%Ora plotto
-p=3; %la suggerisce il prof al momento
-res=100; %la assegno io
-n=size(Pc_trasf,1)-1;
+1 0 3
+4 5 6
+2 1 2
+1 3 2
+1 1 1];
+p=3;
+t=0.6;
+%Calcolo "n"
+n=size(Pc,1)-1;
+res=100;
+%Definisco il vettore dei nodi:
 U=bsl.knotsNonPeriodic(n,p);
-f=figure;
-bsl.createCurve(Pc,p,U,res);
-%view(3);
+%Plotto le funzioni di base (miscelamento) della curva B-spline
+bsl.drawN(n,p,U,res);
+%Calcola gli intervalli (span) dei vettori dei nodi per curve uniformi non
+%periodiche:
+Uk=bsl.getSpan(U);
+disp("Il numero di tratti è:")
+tratti_della_curva=size(Uk,1);
+%Ora vado a valutare l'indice dell'intervallo al quale appartiene il
+%parametro "t" ("0-based")
+i=bsl.findSpanKnot(t,n,U);
+i
+%Verifico che è corretta perchè lo posso verificare mostrando a video il vettore "U":
+U
+%Ora calcolo il vettore delle funzioni di base
+N=bsl.basicFunctionBspline(i,t,p,n,U);
+%I valori del vettore N rappresentano i fattori di peso di ogni punto di
+%controllo della curva (influenza che ha ogni punto di controllo sulla curva).
